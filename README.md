@@ -1,4 +1,4 @@
 Symfony Extension
 =================
 
-Symfony2 extension for PHPSpec2.
+PhpSpec2 extension for Symfony.

@@ -1,0 +1,26 @@
+{
+    "name": "phpspec/symfony2-extension",
+    "description": "PhpSpec extension for Symfony",
+    "type": "library",
+    "keywords": ["phpspec","symfony2"],
+    "homepage": "https://github.com/jakzal/PhpSpecSymfony2Extension",
+    "license": "MIT",
+    "require": {
+        "php":              ">=5.3.3",
+        "phpspec/phpspec": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "PhpSpec\\Symfony2Extension": "src/"
+        }
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "authors": [
+        {
+            "name": "Jakub Zalas",
+            "email": "jakub@zalas.pl"
+        }
+    ]
+}
