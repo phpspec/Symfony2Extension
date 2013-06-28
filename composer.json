@@ -9,6 +9,10 @@
         "php":              ">=5.3.3",
         "phpspec/phpspec": "dev-master"
     },
+    "require-dev": {
+        "behat/behat": "*",
+        "bossa/phpspec2-expect": "dev-master"
+    },
     "autoload": {
         "psr-0": {
             "PhpSpec\\Symfony2Extension": "src/"
