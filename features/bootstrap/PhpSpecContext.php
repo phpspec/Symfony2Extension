@@ -10,6 +10,8 @@ class PhpSpecContext extends BehatContext
 {
     private $workDir = null;
 
+    private $applicationTester = null;
+
     /**
      * @BeforeScenario
      */
@@ -43,17 +45,16 @@ YML;
     }
 
     /**
-     * @When /^(?:|I )run phpspec with "(?P<input>.*)"$/
+     * @When /^(?:|I )execute phpspec with "(?P<input>.*)"$/
+     * @When /^(?:|I )execute phpspec$/
      */
-    public function iRunPhpspecWith($input)
+    public function iExecutePhpspecWith($input = 'run')
     {
-        $input = new StringInput($input);
-        $input->setInteractive(false);
-
-        $output = new StreamOutput(fopen('php://memory', 'w', false));
-
         $application = new Application('2.0-dev');
-        $application->doRun($input, $output);
+        $application->setAutoExit(false);
+
+        $this->applicationTester = new ApplicationTester($application);
+        $this->applicationTester->run(sprintf('%s --no-interaction', $input));
     }
 
     /**
@@ -66,5 +67,13 @@ YML;
         }
 
         expect(file_get_contents($specFile))->toBe($string->getRaw());
+    }
+
+    /**
+     * @Then /^(?:|I )should see "(?P<message>[^"]*)"$/
+     */
+    public function iShouldSee($message)
+    {
+        expect($this->applicationTester->getDisplay())->toMatch('/'.preg_quote($message, '/').'/sm');
     }
 }
