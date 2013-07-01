@@ -81,6 +81,8 @@ YML;
      */
     public function iWroteSpecInThe($file, PyStringNode $string)
     {
+        mkdir(dirname($file), 0777, true);
+
         file_put_contents($file, $string->getRaw());
     }
 

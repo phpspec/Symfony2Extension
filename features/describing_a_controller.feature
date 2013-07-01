@@ -98,7 +98,7 @@ Feature: Describing a controller
     }
 
     """
-    And I wrote a class in the "src/Acme/Bundle/DemoBundle/Controller/UserController":
+    And I wrote a class in the "src/Acme/Bundle/DemoBundle/Controller/UserController.php":
     """
     <?php
 
@@ -120,7 +120,7 @@ Feature: Describing a controller
 
   @wip
   Scenario: Executing a controller spec with service expectations
-    Given I wrote a spec in the "spec/Acme/Bundle/DemoBundle/Controller/UserController":
+    Given I wrote a spec in the "spec/Acme/Bundle/DemoBundle/Controller/UserControllerSpec.php":
     """
     <?php
 
@@ -151,7 +151,7 @@ Feature: Describing a controller
     }
 
     """
-    And I wrote a class in the "src/Acme/Bundle/DemoBundle/Controller/UserController":
+    And I wrote a class in the "src/Acme/Bundle/DemoBundle/Controller/UserController.php":
     """
     <?php
 
