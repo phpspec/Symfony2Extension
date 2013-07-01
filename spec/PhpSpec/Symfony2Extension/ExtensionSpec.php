@@ -31,7 +31,7 @@ class ExtensionSpec extends ObjectBehavior
         $this->load($container);
     }
 
-    function it_registers_the_controller_code_generator($container, IO $io, TemplateRenderer $templateRenderer)
+    function it_registers_the_controller_specification_code_generator($container, IO $io, TemplateRenderer $templateRenderer)
     {
         $container->get('console.io')->willReturn($io);
         $container->get('code_generator.templates')->willReturn($templateRenderer);
@@ -39,6 +39,19 @@ class ExtensionSpec extends ObjectBehavior
         $container->setShared(
             'code_generator.generators.symfony2_controller_specification',
             $this->service('PhpSpec\Symfony2Extension\CodeGenerator\ControllerSpecificationGenerator', $container)
+        )->shouldBeCalled();
+
+        $this->load($container);
+    }
+
+    function it_registers_the_controller_class_code_generator($container, IO $io, TemplateRenderer $templateRenderer)
+    {
+        $container->get('console.io')->willReturn($io);
+        $container->get('code_generator.templates')->willReturn($templateRenderer);
+
+        $container->setShared(
+            'code_generator.generators.symfony2_controller_class',
+            $this->service('PhpSpec\Symfony2Extension\CodeGenerator\ControllerClassGenerator', $container)
         )->shouldBeCalled();
 
         $this->load($container);

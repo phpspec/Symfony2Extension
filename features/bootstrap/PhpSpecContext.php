@@ -17,7 +17,10 @@ class PhpSpecContext extends BehatContext
      */
     public function createWorkDir()
     {
-        $this->workDir = sys_get_temp_dir().'/PhpSpecSymfony2Extension/'.microtime(true).'/';
+        // Unfortunately we cannot make the directory name unique.
+        // Since scenarios might be using the same class names, we cannot change
+        // paths between scenarios.
+        $this->workDir = sys_get_temp_dir().'/PhpSpecSymfony2Extension/';
 
         mkdir($this->workDir, 0777, true);
         chdir($this->workDir);
@@ -54,6 +57,16 @@ YML;
     }
 
     /**
+     * @When /^(?:|I )run phpspec and answer "(?P<answer>[^"]*)" to (?:|the )first question$/
+     */
+    public function iRunPhpspecAndAnswerToTheFirstQuestion($answer)
+    {
+        $this->applicationTester = $this->createApplicationTester();
+        $this->applicationTester->putToInputStream(sprintf("%s\n", $answer));
+        $this->applicationTester->run('run --no-interaction');
+    }
+
+    /**
      * @When /^(?:|I )describe(?:|d) (?:|the )"(?P<class>[^"]*)"$/
      */
     public function iDescribeThe($class)
@@ -63,15 +76,25 @@ YML;
     }
 
     /**
-     * @Then /^(?:|a )new specification should be generated in (?:|the )"(?P<specFile>[^"]*Spec.php)":$/
+     * @Given /^(?:|I )wrote (?:|a )spec in (?:|the )"(?P<file>[^"]+)":$/
+     * @Given /^(?:|I )wrote (?:|a )class in (?:|the )"(?P<file>[^"]+)":$/
      */
-    public function aNewSpecificationShouldBeGeneratedInTheSpecFile($specFile, PyStringNode $string)
+    public function iWroteSpecInThe($file, PyStringNode $string)
     {
-        if (!file_exists($specFile)) {
-            throw new \LogicException('Spec file was not created');
+        file_put_contents($file, $string->getRaw());
+    }
+
+    /**
+     * @Then /^(?:|a )new specification should be generated in (?:|the )"(?P<file>[^"]*Spec.php)":$/
+     * @Then /^(?:|a )new class should be generated in (?:|the )"(?P<file>[^"]+)":$/
+     */
+    public function aNewSpecificationShouldBeGeneratedInTheSpecFile($file, PyStringNode $string)
+    {
+        if (!file_exists($file)) {
+            throw new \LogicException(sprintf('"%s" file was not created', $file));
         }
 
-        expect(file_get_contents($specFile))->toBe($string->getRaw());
+        expect(file_get_contents($file))->toBe($string->getRaw());
     }
 
     /**

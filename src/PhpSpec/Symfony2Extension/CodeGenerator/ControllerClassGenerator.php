@@ -2,15 +2,11 @@
 
 namespace PhpSpec\Symfony2Extension\CodeGenerator;
 
-use PhpSpec\CodeGenerator\Generator\GeneratorInterface;
-use PhpSpec\CodeGenerator\Generator\SpecificationGenerator;
-use PhpSpec\CodeGenerator\TemplateRenderer;
-use PhpSpec\Console\IO;
+use PhpSpec\CodeGenerator\Generator\ClassGenerator;
 use PhpSpec\Locator\ResourceInterface;
 use PhpSpec\Symfony2Extension\Locator\ControllerResource;
-use PhpSpec\Util\Filesystem;
 
-class ControllerSpecificationGenerator extends SpecificationGenerator
+class ControllerClassGenerator extends ClassGenerator
 {
     /**
      * @param ResourceInterface $resource
@@ -21,7 +17,7 @@ class ControllerSpecificationGenerator extends SpecificationGenerator
      */
     public function supports(ResourceInterface $resource, $generation, array $data)
     {
-        return 'specification' === $generation && $resource instanceof ControllerResource;
+        return 'class' === $generation && $resource instanceof ControllerResource;
     }
 
     /**
@@ -40,17 +36,10 @@ class ControllerSpecificationGenerator extends SpecificationGenerator
         return file_get_contents(__FILE__, null, null, __COMPILER_HALT_OFFSET__);
     }
 }
-__halt_compiler();<?php
+__halt_compiler();<?php%namespace_block%
 
-namespace %namespace%;
+use Symfony\Component\DependencyInjection\ContainerAware;
 
-use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
-use Prophecy\Argument;
-
-class %name% extends ControllerBehavior
+class %name% extends ContainerAware
 {
-    function it_is_initializable()
-    {
-        $this->shouldHaveType('%subject%');
-    }
 }

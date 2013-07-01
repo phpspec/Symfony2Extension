@@ -2,9 +2,9 @@
 
 namespace spec\PhpSpec\Symfony2Extension\Locator;
 
+use PhpSpec\Locator\PSR0\PSR0Locator;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use PhpSpec\Locator\PSR0\PSR0Locator;
 
 class ControllerResourceSpec extends ObjectBehavior
 {

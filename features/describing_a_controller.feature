@@ -58,11 +58,10 @@ Feature: Describing a controller
     When I run phpspec
     Then I should see "class Acme\Bundle\DemoBundle\Controller\UserController does not exist"
 
-  @wip
   Scenario: Generating a controller
     Given I described the "Acme/Bundle/DemoBundle/Controller/UserController"
     When I run phpspec and answer "y" to the first question
-    Then I a new class should be generated in the "src/Acme/Bundle/DemoBundle/Controller/UserController.php":
+    Then a new class should be generated in the "src/Acme/Bundle/DemoBundle/Controller/UserController.php":
     """
     <?php
 
