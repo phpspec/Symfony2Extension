@@ -45,16 +45,21 @@ YML;
     }
 
     /**
-     * @When /^(?:|I )execute phpspec with "(?P<input>.*)"$/
-     * @When /^(?:|I )execute phpspec$/
+     * @When /^(?:|I )run phpspec$/
      */
-    public function iExecutePhpspecWith($input = 'run')
+    public function iRunPhpspec()
     {
-        $application = new Application('2.0-dev');
-        $application->setAutoExit(false);
+        $this->applicationTester = $this->createApplicationTester();
+        $this->applicationTester->run('run --no-interaction');
+    }
 
-        $this->applicationTester = new ApplicationTester($application);
-        $this->applicationTester->run(sprintf('%s --no-interaction', $input));
+    /**
+     * @When /^(?:|I )describe (?:|the )"(?P<class>[^"]*)"$/
+     */
+    public function iDescribeThe($class)
+    {
+        $this->applicationTester = $this->createApplicationTester();
+        $this->applicationTester->run(sprintf('describe %s --no-interaction', $class));
     }
 
     /**
@@ -75,5 +80,16 @@ YML;
     public function iShouldSee($message)
     {
         expect($this->applicationTester->getDisplay())->toMatch('/'.preg_quote($message, '/').'/sm');
+    }
+
+    /**
+     * @return ApplicationTester
+     */
+    private function createApplicationTester()
+    {
+        $application = new Application('2.0-dev');
+        $application->setAutoExit(false);
+
+        return new ApplicationTester($application);
     }
 }

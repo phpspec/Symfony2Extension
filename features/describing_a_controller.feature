@@ -5,7 +5,7 @@ Feature: Describing a controller
 
   Scenario Outline: Describing a controller
     Given the Symfony extension is enabled
-    When I execute phpspec with "describe <file>"
+    When I describe the "<class>"
     Then a new specification should be generated in the "spec/Acme/Bundle/DemoBundle/Controller/UserControllerSpec.php":
     """
     <?php
@@ -26,13 +26,13 @@ Feature: Describing a controller
     """
 
     Examples:
-      | file                                                  |
+      | class                                                 |
       | Acme/Bundle/DemoBundle/Controller/UserController      |
       | spec/Acme/Bundle/DemoBundle/Controller/UserController |
 
   Scenario: Describing a class
     Given the Symfony extension is enabled
-    When I execute phpspec with "describe Acme/Bundle/DemoBundle/User"
+    When I describe the "Acme/Bundle/DemoBundle/User"
     Then a new specification should be generated in the "spec/Acme/Bundle/DemoBundle/UserSpec.php":
     """
     <?php
@@ -54,7 +54,10 @@ Feature: Describing a controller
 
   Scenario: Running a controller spec
     Given the Symfony extension is enabled
-    And I execute phpspec with "describe Acme/Bundle/DemoBundle/User"
-    When I execute phpspec
-    Then I should see "class Acme\Bundle\DemoBundle\User does not exist"
+    And I describe the "Acme/Bundle/DemoBundle/Controller/UserController"
+    When I run phpspec
+    Then I should see "class Acme\Bundle\DemoBundle\Controller\UserController does not exist"
 
+  Scenario: Generating a controller
+
+  Scenario: Executing a controller spec
