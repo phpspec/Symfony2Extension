@@ -54,7 +54,7 @@ YML;
     }
 
     /**
-     * @When /^(?:|I )describe (?:|the )"(?P<class>[^"]*)"$/
+     * @When /^(?:|I )describe(?:|d) (?:|the )"(?P<class>[^"]*)"$/
      */
     public function iDescribeThe($class)
     {

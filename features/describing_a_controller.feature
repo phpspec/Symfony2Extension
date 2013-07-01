@@ -54,7 +54,7 @@ Feature: Describing a controller
 
   Scenario: Running a controller spec
     Given the Symfony extension is enabled
-    And I describe the "Acme/Bundle/DemoBundle/Controller/UserController"
+    And I described the "Acme/Bundle/DemoBundle/Controller/UserController"
     When I run phpspec
     Then I should see "class Acme\Bundle\DemoBundle\Controller\UserController does not exist"
 
