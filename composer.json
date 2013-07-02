@@ -6,8 +6,9 @@
     "homepage": "https://github.com/jakzal/PhpSpecSymfony2Extension",
     "license": "MIT",
     "require": {
-        "php":              ">=5.3.3",
-        "phpspec/phpspec": "dev-master"
+        "php": ">=5.3.3",
+        "phpspec/phpspec": "dev-master",
+        "symfony/framework-bundle": "~2.0"
     },
     "require-dev": {
         "behat/behat": "*",
