@@ -84,6 +84,8 @@ YML;
         mkdir(dirname($file), 0777, true);
 
         file_put_contents($file, $string->getRaw());
+
+        require_once($file);
     }
 
     /**

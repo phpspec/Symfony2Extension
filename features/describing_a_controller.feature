@@ -75,15 +75,13 @@ Feature: Describing a controller
 
     """
 
-  @wip
   Scenario: Executing a controller spec with response inspection
-    Given I wrote a spec in the "spec/Acme/Bundle/DemoBundle/Controller/UserController":
+    Given I wrote a spec in the "spec/Acme/Bundle/DemoBundle/Controller/UserControllerSpec.php":
     """
     <?php
 
     namespace spec\Acme\Bundle\DemoBundle\Controller;
 
-    use Doctrine\ORM\EntityRepository;
     use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
     use Prophecy\Argument;
 
@@ -105,6 +103,7 @@ Feature: Describing a controller
     namespace Acme\Bundle\DemoBundle\Controller;
 
     use Symfony\Component\DependencyInjection\ContainerAware;
+    use Symfony\Component\HttpFoundation\Response;
 
     class UserController extends ContainerAware
     {
@@ -116,7 +115,7 @@ Feature: Describing a controller
 
     """
     When I run phpspec
-    Then I should see "1 example (1 passed)"
+    Then I should see "2 examples (2 passed)"
 
   @wip
   Scenario: Executing a controller spec with service expectations
@@ -126,26 +125,22 @@ Feature: Describing a controller
 
     namespace spec\Acme\Bundle\DemoBundle\Controller;
 
-    use Doctrine\Bundle\DoctrineBundle\Registry;
-    use Doctrine\ORM\EntityRepository;
     use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
     use Prophecy\Argument;
     use Symfony\Component\Templating\EngineInterface;
+    use Symfony\Component\DependencyInjection\ContainerInterface;
 
     class UserControllerSpec extends ControllerBehavior
     {
-        function let(Registry $doctrine, EntityRepository $repository, EngineInterface $templating)
+        function let(ContainerInterface $container, EngineInterface $templating)
         {
-            $doctrine->getManager()->willReturn($repository);
-            $this->container->get('doctrine')->willReturn($doctrine);
+            $this->setContainer($container);
             $this->container->get('templating')->willReturn($templating);
         }
 
-        function it_should_render_list_of_users(EntityRepository $repository)
+        function it_should_render_list_of_users()
         {
-            $repository->findAll()->willReturn(array('user1', 'user2'));
-
-            $this->shouldRender('AcmeUserBundle:User:list.html.twig', array('users' => array('user1', 'user2')))
+            $this->shouldRender('AcmeUserBundle:User:list.html.twig', array('users' => array()))
                 ->duringAction('list');
         }
     }
@@ -163,14 +158,12 @@ Feature: Describing a controller
     {
         public function listAction()
         {
-            $repository = $this->get('doctrine')->getManager();
-
             return $this->container->get('templating')->renderResponse(
-                'AcmeUserBundle:User:list.html.twig', array('users' => $repository->findAll())
+                'AcmeUserBundle:User:list.html.twig', array('users' => array())
             );
         }
     }
 
     """
     When I run phpspec
-    Then I should see "1 example (1 passed)"
+    Then I should see "2 examples (2 passed)"
