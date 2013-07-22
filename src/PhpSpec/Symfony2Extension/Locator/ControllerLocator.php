@@ -8,6 +8,14 @@ use PhpSpec\Locator\ResourceInterface;
 class ControllerLocator extends PSR0Locator
 {
     /**
+     * @return array
+     */
+    public function getAllResources()
+    {
+        return array();
+    }
+
+    /**
      * @param string $query
      *
      * @return boolean

@@ -22,6 +22,11 @@ class ControllerLocatorSpec extends ObjectBehavior
         $this->shouldHaveType('PhpSpec\Locator\PSR0\PSR0Locator');
     }
 
+    function it_does_not_duplicate_the_psr0_resources()
+    {
+        $this->getAllResources()->shouldReturn(array());
+    }
+
     function it_supports_controller_queries()
     {
         $this->supportsQuery('spec/Acme/Bundle/DemoBundle/Controller/DemoController.php')->shouldReturn(true);

@@ -115,7 +115,7 @@ Feature: Describing a controller
 
     """
     When I run phpspec
-    Then I should see "2 examples (2 passed)"
+    Then I should see "1 example (1 passed)"
 
   Scenario: Executing a controller spec with a service
     Given I wrote a spec in the "spec/Scenario6/Bundle/DemoBundle/Controller/UserControllerSpec.php":
@@ -164,7 +164,7 @@ Feature: Describing a controller
 
     """
     When I run phpspec
-    Then I should see "2 examples (2 passed)"
+    Then I should see "1 example (1 passed)"
 
   @wip
   Scenario: Executing a controller spec with render matcher
@@ -210,4 +210,4 @@ Feature: Describing a controller
 
     """
     When I run phpspec
-    Then I should see "2 examples (2 passed)"
+    Then I should see "1 example (1 passed)"
