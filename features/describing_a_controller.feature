@@ -8,11 +8,11 @@ Feature: Describing a controller
 
   Scenario Outline: Controller spec is generated
     When I describe the "<class>"
-    Then a new specification should be generated in the "spec/Acme/Bundle/DemoBundle/Controller/UserControllerSpec.php":
+    Then a new specification should be generated in the "spec/Scenario1/Bundle/DemoBundle/Controller/UserControllerSpec.php":
     """
     <?php
 
-    namespace spec\Acme\Bundle\DemoBundle\Controller;
+    namespace spec\Scenario1\Bundle\DemoBundle\Controller;
 
     use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
     use Prophecy\Argument;
@@ -21,24 +21,24 @@ Feature: Describing a controller
     {
         function it_is_initializable()
         {
-            $this->shouldHaveType('Acme\Bundle\DemoBundle\Controller\UserController');
+            $this->shouldHaveType('Scenario1\Bundle\DemoBundle\Controller\UserController');
         }
     }
 
     """
 
     Examples:
-      | class                                                 |
-      | Acme/Bundle/DemoBundle/Controller/UserController      |
-      | spec/Acme/Bundle/DemoBundle/Controller/UserController |
+      | class                                                      |
+      | Scenario1/Bundle/DemoBundle/Controller/UserController      |
+      | spec/Scenario1/Bundle/DemoBundle/Controller/UserController |
 
   Scenario: Non-controller spec is generated with a default template
-    When I describe the "Acme/Bundle/DemoBundle/User"
-    Then a new specification should be generated in the "spec/Acme/Bundle/DemoBundle/UserSpec.php":
+    When I describe the "Scenario2/Bundle/DemoBundle/User"
+    Then a new specification should be generated in the "spec/Scenario2/Bundle/DemoBundle/UserSpec.php":
     """
     <?php
 
-    namespace spec\Acme\Bundle\DemoBundle;
+    namespace spec\Scenario2\Bundle\DemoBundle;
 
     use PhpSpec\ObjectBehavior;
     use Prophecy\Argument;
@@ -47,25 +47,25 @@ Feature: Describing a controller
     {
         function it_is_initializable()
         {
-            $this->shouldHaveType('Acme\Bundle\DemoBundle\User');
+            $this->shouldHaveType('Scenario2\Bundle\DemoBundle\User');
         }
     }
 
     """
 
   Scenario: Running a controller spec
-    Given I described the "Acme/Bundle/DemoBundle/Controller/UserController"
+    Given I described the "Scenario3/Bundle/DemoBundle/Controller/UserController"
     When I run phpspec
-    Then I should see "class Acme\Bundle\DemoBundle\Controller\UserController does not exist"
+    Then I should see "class Scenario3\Bundle\DemoBundle\Controller\UserController does not exist"
 
   Scenario: Generating a controller
-    Given I described the "Acme/Bundle/DemoBundle/Controller/UserController"
+    Given I described the "Scenario4/Bundle/DemoBundle/Controller/UserController"
     When I run phpspec and answer "y" to the first question
-    Then a new class should be generated in the "src/Acme/Bundle/DemoBundle/Controller/UserController.php":
+    Then a new class should be generated in the "src/Scenario4/Bundle/DemoBundle/Controller/UserController.php":
     """
     <?php
 
-    namespace Acme\Bundle\DemoBundle\Controller;
+    namespace Scenario4\Bundle\DemoBundle\Controller;
 
     use Symfony\Component\DependencyInjection\ContainerAware;
 
@@ -76,11 +76,11 @@ Feature: Describing a controller
     """
 
   Scenario: Executing a controller spec with response inspection
-    Given I wrote a spec in the "spec/Acme/Bundle/DemoBundle/Controller/UserControllerSpec.php":
+    Given I wrote a spec in the "spec/Scenario5/Bundle/DemoBundle/Controller/UserControllerSpec.php":
     """
     <?php
 
-    namespace spec\Acme\Bundle\DemoBundle\Controller;
+    namespace spec\Scenario5\Bundle\DemoBundle\Controller;
 
     use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
     use Prophecy\Argument;
@@ -96,11 +96,11 @@ Feature: Describing a controller
     }
 
     """
-    And I wrote a class in the "src/Acme/Bundle/DemoBundle/Controller/UserController.php":
+    And I wrote a class in the "src/Scenario5/Bundle/DemoBundle/Controller/UserController.php":
     """
     <?php
 
-    namespace Acme\Bundle\DemoBundle\Controller;
+    namespace Scenario5\Bundle\DemoBundle\Controller;
 
     use Symfony\Component\DependencyInjection\ContainerAware;
     use Symfony\Component\HttpFoundation\Response;
@@ -118,39 +118,84 @@ Feature: Describing a controller
     Then I should see "2 examples (2 passed)"
 
   @wip
-  Scenario: Executing a controller spec with service expectations
-    Given I wrote a spec in the "spec/Acme/Bundle/DemoBundle/Controller/UserControllerSpec.php":
+  Scenario: Executing a controller spec with a service
+    Given I wrote a spec in the "spec/Scenario6/Bundle/DemoBundle/Controller/UserControllerSpec.php":
     """
     <?php
 
-    namespace spec\Acme\Bundle\DemoBundle\Controller;
+    namespace spec\Scenario6\Bundle\DemoBundle\Controller;
+
+    use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
+    use Prophecy\Argument;
+    use Symfony\Component\Routing\Router;
+
+    class UserControllerSpec extends ControllerBehavior
+    {
+        function it_should_redirect_to_the_homepage(Router $router)
+        {
+            $this->container->set('router', $router);
+
+            $router->generate('homepage')->willReturn('/');
+
+            $response = $this->listAction();
+            $response->shouldHaveType('Symfony\Component\HttpFoundation\RedirectResponse');
+            $response->getTargetUrl()->shouldBe('/');
+        }
+    }
+
+    """
+    And I wrote a class in the "src/Scenario6/Bundle/DemoBundle/Controller/UserController.php":
+    """
+    <?php
+
+    namespace Scenario6\Bundle\DemoBundle\Controller;
+
+    use Symfony\Component\DependencyInjection\ContainerAware;
+    use Symfony\Component\HttpFoundation\RedirectResponse;
+
+    class UserController extends ContainerAware
+    {
+        public function listAction()
+        {
+            $url = $this->container->get('router')->generate('homepage');
+
+            return new RedirectResponse($url);
+        }
+    }
+
+    """
+    When I run phpspec
+    Then I should see "2 examples (2 passed)"
+
+  @wip
+  Scenario: Executing a controller spec with render matcher
+    Given I wrote a spec in the "spec/Scenario7/Bundle/DemoBundle/Controller/UserControllerSpec.php":
+    """
+    <?php
+
+    namespace spec\Scenario7\Bundle\DemoBundle\Controller;
 
     use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
     use Prophecy\Argument;
     use Symfony\Component\Templating\EngineInterface;
-    use Symfony\Component\DependencyInjection\ContainerInterface;
 
     class UserControllerSpec extends ControllerBehavior
     {
-        function let(ContainerInterface $container, EngineInterface $templating)
+        function it_should_render_list_of_users(EngineInterface $templating)
         {
-            $this->setContainer($container);
-            $this->container->get('templating')->willReturn($templating);
-        }
+            $this->container->set('templating', $templating);
 
-        function it_should_render_list_of_users()
-        {
-            $this->shouldRender('AcmeUserBundle:User:list.html.twig', array('users' => array()))
+            $this->shouldRender('Scenario7UserBundle:User:list.html.twig', array('users' => array()))
                 ->duringAction('list');
         }
     }
 
     """
-    And I wrote a class in the "src/Acme/Bundle/DemoBundle/Controller/UserController.php":
+    And I wrote a class in the "src/Scenario7/Bundle/DemoBundle/Controller/UserController.php":
     """
     <?php
 
-    namespace Acme\Bundle\DemoBundle\Controller;
+    namespace Scenario7\Bundle\DemoBundle\Controller;
 
     use Symfony\Component\DependencyInjection\ContainerAware;
 
@@ -159,7 +204,7 @@ Feature: Describing a controller
         public function listAction()
         {
             return $this->container->get('templating')->renderResponse(
-                'AcmeUserBundle:User:list.html.twig', array('users' => array())
+                'Scenario7UserBundle:User:list.html.twig', array('users' => array())
             );
         }
     }
