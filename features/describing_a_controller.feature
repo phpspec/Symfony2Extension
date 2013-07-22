@@ -117,7 +117,6 @@ Feature: Describing a controller
     When I run phpspec
     Then I should see "2 examples (2 passed)"
 
-  @wip
   Scenario: Executing a controller spec with a service
     Given I wrote a spec in the "spec/Scenario6/Bundle/DemoBundle/Controller/UserControllerSpec.php":
     """
