@@ -16,25 +16,15 @@ class ControllerLocator extends PSR0Locator
     }
 
     /**
-     * @param string $query
-     *
-     * @return boolean
-     */
-    public function supportsQuery($query)
-    {
-        return 1 === preg_match('#.*/.*?Controller.php#', $query);
-    }
-
-    /**
      * @param string $classname
      *
      * @return boolean
      */
     public function supportsClass($classname)
     {
-        $classname = str_replace('/', '\\', $classname);
+        $classname = $this->fixClassNamespace($classname);
 
-        return 1 === preg_match('#.*\\.*?Controller(Spec|)$#', $classname);
+        return $this->isControllerClass($classname) && parent::supportsClass($classname);
     }
 
     /**
@@ -44,7 +34,7 @@ class ControllerLocator extends PSR0Locator
      */
     public function createResource($classname)
     {
-        $classname = str_replace('/', '\\', $classname);
+        $classname = $this->fixClassNamespace($classname);
 
         if (0 === strpos($classname, $this->getSpecNamespace())) {
             $relative = substr($classname, strlen($this->getSpecNamespace()));
@@ -67,5 +57,25 @@ class ControllerLocator extends PSR0Locator
     public function getPriority()
     {
         return 10;
+    }
+
+    /**
+     * @param string $classname
+     *
+     * @return string
+     */
+    private function fixClassNamespace($classname)
+    {
+        return str_replace('/', '\\', $classname);
+    }
+
+    /**
+     * @param string $classname
+     *
+     * @return boolean
+     */
+    private function isControllerClass($classname)
+    {
+        return 1 === preg_match('#.*Bundle\\\\Controller\\\\.*?Controller(Spec|)$#', $classname);
     }
 }
