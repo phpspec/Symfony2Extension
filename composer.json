@@ -3,7 +3,7 @@
     "description": "Symfony extension for phpspec",
     "type": "library",
     "keywords": ["phpspec","symfony2"],
-    "homepage": "https://github.com/jakzal/PhpspecSymfony2Extension",
+    "homepage": "https://github.com/phpspec/Symfony2Extension",
     "license": "MIT",
     "require": {
         "php": ">=5.3.3",
