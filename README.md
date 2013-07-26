@@ -1,4 +1,6 @@
-Symfony Extension
-=================
+Symfony2 Extension
+==================
 
-Symfony extension for phpspec (still experimental).
+[![Build Status](https://travis-ci.org/jakzal/PhpspecSymfony2Extension.png?branch=master)](https://travis-ci.org/jakzal/PhpspecSymfony2Extension)
+
+Symfony2 extension for phpspec (still experimental).
