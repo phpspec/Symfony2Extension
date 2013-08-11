@@ -3,7 +3,7 @@
 namespace PhpSpec\Symfony2Extension\Locator;
 
 use PhpSpec\Locator\ResourceInterface;
-use PhpSpec\Locator\ResourceLocatorInterface;
+use PhpSpec\Symfony2Extension\Locator\PSR0Locator as Locator;
 
 class PSR0Resource implements ResourceInterface
 {
@@ -13,15 +13,15 @@ class PSR0Resource implements ResourceInterface
     private $parts;
 
     /**
-     * @var ResourceLocatorInterface
+     * @var Locator
      */
     private $locator;
 
     /**
-     * @param array                    $parts
-     * @param ResourceLocatorInterface $locator
+     * @param array   $parts
+     * @param Locator $locator
      */
-    public function __construct($parts, ResourceLocatorInterface $locator)
+    public function __construct($parts, Locator $locator)
     {
         $this->parts = $parts;
         $this->locator = $locator;
@@ -39,12 +39,15 @@ class PSR0Resource implements ResourceInterface
 
     public function getSrcFilename()
     {
-        // @todo: Implement getSrcFilename() method.
+        return $this->locator->getFullSrcPath().implode(DIRECTORY_SEPARATOR, $this->parts).'.php';
     }
 
     public function getSrcNamespace()
     {
-        // @todo: Implement getSrcNamespace() method.
+        $parts = $this->parts;
+        array_pop($parts);
+
+        return rtrim($this->locator->getSrcNamespace().implode('\\', $parts), '\\');
     }
 
     public function getSrcClassname()
