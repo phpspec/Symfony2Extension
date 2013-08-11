@@ -3,17 +3,38 @@
 namespace PhpSpec\Symfony2Extension\Locator;
 
 use PhpSpec\Locator\ResourceInterface;
+use PhpSpec\Locator\ResourceLocatorInterface;
 
 class PSR0Resource implements ResourceInterface
 {
+    /**
+     * @var array
+     */
+    private $parts;
+
+    /**
+     * @var ResourceLocatorInterface
+     */
+    private $locator;
+
+    /**
+     * @param array                    $parts
+     * @param ResourceLocatorInterface $locator
+     */
+    public function __construct($parts, ResourceLocatorInterface $locator)
+    {
+        $this->parts = $parts;
+        $this->locator = $locator;
+    }
+
     public function getName()
     {
-        // @todo: Implement getName() method.
+        return end($this->parts);
     }
 
     public function getSpecName()
     {
-        // @todo: Implement getSpecName() method.
+        return $this->getName().'Spec';
     }
 
     public function getSrcFilename()
