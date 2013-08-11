@@ -14,7 +14,7 @@ class PSR0ResourceSpec extends ObjectBehavior
 
     function let()
     {
-        $this->beConstructedWith($this->namespaceParts, $this->srcPath, $this->specSuffix);
+        $this->beConstructedWith($this->namespaceParts, $this->specSuffix, $this->srcPath);
     }
 
     function it_is_a_locator_resource()
@@ -51,7 +51,7 @@ class PSR0ResourceSpec extends ObjectBehavior
 
     function it_generates_a_proper_src_namespace_even_if_there_is_only_one_part()
     {
-        $this->beConstructedWith(array('User'), 'src');
+        $this->beConstructedWith(array('User'));
 
         $this->getSrcNamespace()->shouldReturn('');
     }
@@ -76,7 +76,7 @@ class PSR0ResourceSpec extends ObjectBehavior
 
     function it_generates_a_regular_spec_filename_from_provided_parts_using_the_spec_suffix()
     {
-        $this->beConstructedWith(array('Acme', 'Model', 'User'), $this->srcPath, $this->specSuffix);
+        $this->beConstructedWith(array('Acme', 'Model', 'User'), $this->specSuffix, $this->srcPath);
 
         $specFilename = $this->srcPath
             .'Acme'.DIRECTORY_SEPARATOR
@@ -87,9 +87,22 @@ class PSR0ResourceSpec extends ObjectBehavior
         $this->getSpecFilename()->shouldReturn($specFilename);
     }
 
+    function it_generates_a_regular_spec_filename_from_provided_parts_using_the_changed_spec_suffix()
+    {
+        $this->beConstructedWith(array('Acme', 'Model', 'User'), 'Specs', $this->srcPath);
+
+        $specFilename = $this->srcPath
+            .'Acme'.DIRECTORY_SEPARATOR
+            .'Model'.DIRECTORY_SEPARATOR
+            .'Specs'.DIRECTORY_SEPARATOR
+            .'UserSpec.php';
+
+        $this->getSpecFilename()->shouldReturn($specFilename);
+    }
+
     function it_generates_a_spec_filename_from_a_single_part()
     {
-        $this->beConstructedWith(array('User'), $this->srcPath, $this->specSuffix);
+        $this->beConstructedWith(array('User'), $this->specSuffix, $this->srcPath);
 
         $specFilename = $this->srcPath
             .$this->specSuffix.DIRECTORY_SEPARATOR
@@ -105,14 +118,14 @@ class PSR0ResourceSpec extends ObjectBehavior
 
     function it_generates_a_regular_spec_namespace_from_provided_parts()
     {
-        $this->beConstructedWith(array('Acme', 'Model', 'User'), $this->srcPath, $this->specSuffix);
+        $this->beConstructedWith(array('Acme', 'Model', 'User'), $this->specSuffix, $this->srcPath);
 
         $this->getSpecNamespace()->shouldReturn('Acme\\Model\\Spec');
     }
 
     function it_generates_a_proper_spec_namespace_even_if_there_is_only_one_part()
     {
-        $this->beConstructedWith(array('User'), $this->srcPath, $this->specSuffix);
+        $this->beConstructedWith(array('User'), $this->specSuffix, $this->srcPath);
 
         $this->getSpecNamespace()->shouldReturn('Spec');
     }

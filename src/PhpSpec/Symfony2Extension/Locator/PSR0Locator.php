@@ -9,15 +9,18 @@ class PSR0Locator implements ResourceLocatorInterface
 {
     private $srcNamespace;
 
+    private $specSubNamespace;
+
     private $srcPath;
 
     private $specPaths = array();
 
     private $filesystem;
 
-    public function __construct($srcNamespace = '', $srcPath = 'src', $specPaths = array(), Filesystem $filesystem = null)
+    public function __construct($srcNamespace = '', $specSubNamespace = 'Spec', $srcPath = 'src', $specPaths = array(), Filesystem $filesystem = null)
     {
         $this->srcNamespace = $srcNamespace;
+        $this->specSubNamespace = $specSubNamespace;
         $this->srcPath = rtrim(realpath($srcPath), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
 
         foreach ($specPaths as $specPath) {
@@ -44,7 +47,7 @@ class PSR0Locator implements ResourceLocatorInterface
             $relative = substr($path, strlen($this->srcPath), -4);
             $relative = str_replace('Spec', '', $relative);
 
-            $resources[] = new PSR0Resource(array_filter(explode(DIRECTORY_SEPARATOR, $relative)), $this->srcPath);
+            $resources[] = $this->createResource($relative);
         }
 
         return $resources;
@@ -71,7 +74,14 @@ class PSR0Locator implements ResourceLocatorInterface
 
     public function createResource($classname)
     {
-        // @todo: Implement createResource() method.
+        $classname = str_replace('/', '\\', $classname);
+        $classname = str_replace(array($this->specSubNamespace, 'Spec'), '', $classname);
+
+        if ('' === $this->srcNamespace || 0 === strpos($classname, $this->srcNamespace)) {
+            return new PSR0Resource(array_filter(explode('\\', $classname)), $this->specSubNamespace, $this->srcPath);
+        }
+
+        return null;
     }
 
     public function getPriority()

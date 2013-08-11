@@ -29,9 +29,7 @@ class PSR0LocatorSpec extends ObjectBehavior
 
         chdir($this->workspace);
 
-        $specPaths = array('src/*/Bundle/*Bundle/Spec', 'src/*/*/Spec');
-
-        $this->beConstructedWith('', 'src', $specPaths, $fs);
+        $this->beConstructedWith('Acme', 'Spec', 'src', array('src/*/Bundle/*Bundle/Spec', 'src/*/*/Spec'), $fs);
     }
 
     function letgo()
@@ -95,38 +93,102 @@ class PSR0LocatorSpec extends ObjectBehavior
 
     function it_supports_classes_from_srcNamespace(Filesystem $fs)
     {
-        $specPaths = array('src/*/*/Spec');
-
-        $this->beConstructedWith('Acme\\Model', 'src', $specPaths, $fs);
+        $this->beConstructedWith('Acme\\Model', 'Spec', 'src', array('src/*/*/Spec'), $fs);
 
         $this->supportsClass('Acme\\Model\\User')->shouldReturn(true);
     }
 
     function it_supports_forward_slashed_classes_from_srcNamespace(Filesystem $fs)
     {
-        $specPaths = array('src/*/*/Spec');
-
-        $this->beConstructedWith('Acme\\Model', 'src', $specPaths, $fs);
+        $this->beConstructedWith('Acme\\Model', 'Spec', 'src', array('src/*/*/Spec'), $fs);
 
         $this->supportsClass('Acme/Model/User')->shouldReturn(true);
     }
 
     function it_supports_any_class_if_srcNamespace_is_empty(Filesystem $fs)
     {
-        $specPaths = array('src/*/*/Spec');
-
-        $this->beConstructedWith('', 'src', $specPaths, $fs);
+        $this->beConstructedWith('', 'Spec', 'src', array('src/*/*/Spec'), $fs);
 
         $this->supportsClass('User')->shouldReturn(true);
     }
 
-    function it_does_not_support_any_other_class()
+    function it_does_not_support_any_other_class(Filesystem $fs)
     {
-        $specPaths = array('src/*/*/Spec');
-
-        $this->beConstructedWith('Acme', 'src', $specPaths, $fs);
+        $this->beConstructedWith('Acme', 'Spec', 'src', array('src/*/*/Spec'), $fs);
 
         $this->supportsClass('Foo\Any')->shouldReturn(false);
+    }
+
+    function it_creates_a_resource_from_a_bundle_src_class()
+    {
+        $resource = $this->createResource('Acme\Bundle\DemoBundle\Model\User');
+
+        $resource->shouldBeAnInstanceOf('PhpSpec\Symfony2Extension\Locator\PSR0Resource');
+        $resource->getSrcClassname()->shouldReturn('Acme\Bundle\DemoBundle\Model\User');
+        $resource->getSpecClassname()->shouldReturn('Acme\Bundle\DemoBundle\Spec\Model\UserSpec');
+    }
+
+    function it_creates_a_resource_from_any_src_class()
+    {
+        $resource = $this->createResource('Acme\Model\User');
+
+        $resource->shouldBeAnInstanceOf('PhpSpec\Symfony2Extension\Locator\PSR0Resource');
+        $resource->getSrcClassname()->shouldReturn('Acme\Model\User');
+        $resource->getSpecClassname()->shouldReturn('Acme\Model\Spec\UserSpec');
+    }
+
+    function it_creates_a_resource_from_a_forward_slashed_src_class()
+    {
+        $resource = $this->createResource('Acme/Bundle/DemoBundle/Model/User');
+
+        $resource->shouldBeAnInstanceOf('PhpSpec\Symfony2Extension\Locator\PSR0Resource');
+        $resource->getSrcClassname()->shouldReturn('Acme\Bundle\DemoBundle\Model\User');
+        $resource->getSpecClassname()->shouldReturn('Acme\Bundle\DemoBundle\Spec\Model\UserSpec');
+    }
+
+    function it_creates_a_resource_from_a_spec_class()
+    {
+        $resource = $this->createResource('Acme\Bundle\DemoBundle\Spec\Model\UserSpec');
+
+        $resource->shouldBeAnInstanceOf('PhpSpec\Symfony2Extension\Locator\PSR0Resource');
+        $resource->getSrcClassname()->shouldReturn('Acme\Bundle\DemoBundle\Model\User');
+        $resource->getSpecClassname()->shouldReturn('Acme\Bundle\DemoBundle\Spec\Model\UserSpec');
+    }
+
+    function it_creates_a_resource_from_a_spec_class_with_a_custom_specSubNamespace()
+    {
+        $this->beConstructedWith('Acme', 'Specs', 'src', array('src/*/Bundle/*Bundle/Specs', 'src/*/*/Specs'), $fs);
+
+        $resource = $this->createResource('Acme\Bundle\DemoBundle\Specs\Model\UserSpec');
+
+        $resource->shouldBeAnInstanceOf('PhpSpec\Symfony2Extension\Locator\PSR0Resource');
+        $resource->getSrcClassname()->shouldReturn('Acme\Bundle\DemoBundle\Model\User');
+        $resource->getSpecClassname()->shouldReturn('Acme\Bundle\DemoBundle\Specs\Model\UserSpec');
+    }
+
+    function it_creates_a_resource_from_a_forward_slashed_spec_class()
+    {
+        $resource = $this->createResource('Acme/Bundle/DemoBundle/Spec/Model/UserSpec');
+
+        $resource->shouldBeAnInstanceOf('PhpSpec\Symfony2Extension\Locator\PSR0Resource');
+        $resource->getSrcClassname()->shouldReturn('Acme\Bundle\DemoBundle\Model\User');
+        $resource->getSpecClassname()->shouldReturn('Acme\Bundle\DemoBundle\Spec\Model\UserSpec');
+    }
+
+    function it_creates_a_resource_from_a_src_class_even_if_the_srcNamespace_is_empty(Filesystem $fs)
+    {
+        $this->beConstructedWith('', 'Spec', 'src', array('src/*/Bundle/*Bundle/Spec', 'src/*/*/Spec'), $fs);
+
+        $resource = $this->createResource('Acme\Model\User');
+
+        $resource->shouldBeAnInstanceOf('PhpSpec\Symfony2Extension\Locator\PSR0Resource');
+        $resource->getSrcClassname()->shouldReturn('Acme\Model\User');
+        $resource->getSpecClassname()->shouldReturn('Acme\Model\Spec\UserSpec');
+    }
+
+    function it_returns_null_if_srcNamespace_does_not_match(Filesystem $fs)
+    {
+        $this->createResource('Foo\Model\User')->shouldReturn(null);
     }
 
     function its_priority_is_zero()

@@ -19,18 +19,18 @@ class PSR0Resource implements ResourceInterface
     /**
      * @var string
      */
-    private $specSuffix;
+    private $specSubNamespace;
 
     /**
      * @param array  $namespaceParts
+     * @param string $specSubNamespace
      * @param string $srcPath
-     * @param string $specSuffix
      */
-    public function __construct($namespaceParts, $srcPath, $specSuffix = 'Spec')
+    public function __construct($namespaceParts, $specSubNamespace = 'Spec', $srcPath = 'src')
     {
         $this->parts = $namespaceParts;
         $this->srcPath = $srcPath;
-        $this->specSuffix = 'Spec';
+        $this->specSubNamespace = $specSubNamespace;
     }
 
     /**
@@ -114,7 +114,7 @@ class PSR0Resource implements ResourceInterface
     {
         if (count($this->parts) < 2) {
             $parts = $this->parts;
-            array_unshift($parts, $this->specSuffix);
+            array_unshift($parts, $this->specSubNamespace);
 
             return $parts;
         }
@@ -125,7 +125,7 @@ class PSR0Resource implements ResourceInterface
             $parts[] = $part;
 
             if ((1 === $i && 'Bundle' !== $part) || preg_match('/^.+Bundle$/', $part)) {
-                $parts[] = $this->specSuffix;
+                $parts[] = $this->specSubNamespace;
             }
         }
 
