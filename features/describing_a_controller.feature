@@ -1,3 +1,4 @@
+# split into multiple files and add missing scenarios (like run with parameters)
 Feature: Describing a controller
   As a Developer
   I want to automate creating controller specifications
@@ -6,13 +7,14 @@ Feature: Describing a controller
   Background:
     Given the Symfony extension is enabled
 
+  @wip
   Scenario Outline: Controller spec is generated
     When I describe the "<class>"
-    Then a new specification should be generated in the "spec/Scenario1/Bundle/DemoBundle/Controller/UserControllerSpec.php":
+    Then a new specification should be generated in the "Scenario1/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
     """
     <?php
 
-    namespace spec\Scenario1\Bundle\DemoBundle\Controller;
+    namespace Scenario1\Bundle\DemoBundle\Spec\Controller;
 
     use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
     use Prophecy\Argument;
@@ -21,7 +23,7 @@ Feature: Describing a controller
     {
         function it_is_initializable()
         {
-            $this->shouldHaveType('Scenario1\Bundle\DemoBundle\Controller\UserController');
+            $this->shouldHaveType('Scenario1\Bundle\DemoBundle\Spec\Controller\UserController');
         }
     }
 
@@ -30,34 +32,9 @@ Feature: Describing a controller
     Examples:
       | class                                                      |
       | Scenario1/Bundle/DemoBundle/Controller/UserController      |
-      | spec/Scenario1/Bundle/DemoBundle/Controller/UserController |
+      | Scenario1/Bundle/DemoBundle/Spec/Controller/UserController |
 
-  Scenario: Non-controller spec is generated with a default template
-    When I describe the "Scenario2/Bundle/DemoBundle/User"
-    Then a new specification should be generated in the "spec/Scenario2/Bundle/DemoBundle/UserSpec.php":
-    """
-    <?php
-
-    namespace spec\Scenario2\Bundle\DemoBundle;
-
-    use PhpSpec\ObjectBehavior;
-    use Prophecy\Argument;
-
-    class UserSpec extends ObjectBehavior
-    {
-        function it_is_initializable()
-        {
-            $this->shouldHaveType('Scenario2\Bundle\DemoBundle\User');
-        }
-    }
-
-    """
-
-  Scenario: Running a controller spec
-    Given I described the "Scenario3/Bundle/DemoBundle/Controller/UserController"
-    When I run phpspec
-    Then I should see "class Scenario3\Bundle\DemoBundle\Controller\UserController does not exist"
-
+  @wip
   Scenario: Generating a controller
     Given I described the "Scenario4/Bundle/DemoBundle/Controller/UserController"
     When I run phpspec and answer "y" to the first question
@@ -75,12 +52,13 @@ Feature: Describing a controller
 
     """
 
-  Scenario: Executing a controller spec with response inspection
-    Given I wrote a spec in the "spec/Scenario5/Bundle/DemoBundle/Controller/UserControllerSpec.php":
+  @wip
+  Scenario: Executing a controller spec with a response inspection
+    Given I wrote a spec in the "Scenario5/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
     """
     <?php
 
-    namespace spec\Scenario5\Bundle\DemoBundle\Controller;
+    namespace Scenario5\Bundle\DemoBundle\Spec\Controller;
 
     use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
     use Prophecy\Argument;
@@ -117,12 +95,13 @@ Feature: Describing a controller
     When I run phpspec
     Then I should see "1 example (1 passed)"
 
+  @wip
   Scenario: Executing a controller spec with a service
-    Given I wrote a spec in the "spec/Scenario6/Bundle/DemoBundle/Controller/UserControllerSpec.php":
+    Given I wrote a spec in the "Scenario6/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
     """
     <?php
 
-    namespace spec\Scenario6\Bundle\DemoBundle\Controller;
+    namespace Scenario6\Bundle\DemoBundle\Spec\Controller;
 
     use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
     use Prophecy\Argument;
@@ -167,12 +146,12 @@ Feature: Describing a controller
     Then I should see "1 example (1 passed)"
 
   @wip
-  Scenario: Executing a controller spec with render matcher
-    Given I wrote a spec in the "spec/Scenario7/Bundle/DemoBundle/Controller/UserControllerSpec.php":
+  Scenario: Executing a controller spec with a render matcher
+    Given I wrote a spec in the "Scenario7/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
     """
     <?php
 
-    namespace spec\Scenario7\Bundle\DemoBundle\Controller;
+    namespace Scenario7\Bundle\DemoBundle\Spec\Controller;
 
     use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
     use Prophecy\Argument;
