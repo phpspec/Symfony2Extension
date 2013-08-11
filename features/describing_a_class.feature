@@ -6,7 +6,7 @@ Feature: Describing a class
   Background:
     Given the Symfony extension is enabled
 
-  @wip
+  @wip @dev
   Scenario: Spec is generated in the bundle
     When I describe the "Scenario1/Bundle/DemoBundle/Model/User"
     Then a new specification should be generated in the "Scenario1/Bundle/DemoBundle/Spec/Model/UserSpec.php":
