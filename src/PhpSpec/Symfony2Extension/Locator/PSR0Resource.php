@@ -52,7 +52,7 @@ class PSR0Resource implements ResourceInterface
 
     public function getSrcClassname()
     {
-        // @todo: Implement getSrcClassname() method.
+        return $this->locator->getSrcNamespace().implode('\\', $this->parts);
     }
 
     public function getSpecFilename()

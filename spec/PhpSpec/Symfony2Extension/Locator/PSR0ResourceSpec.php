@@ -49,12 +49,26 @@ class PSR0ResourceSpec extends ObjectBehavior
         $this->getSrcNamespace()->shouldReturn('Local\\Acme\\Bundle\\DemoBundle\\Model');
     }
 
-    function it_generates_proper_src_namespace_even_if_there_is_only_one_part(Locator $locator)
+    function it_generates_a_proper_src_namespace_even_if_there_is_only_one_part(Locator $locator)
     {
         $this->beConstructedWith(array('config'), $locator);
 
         $locator->getSrcNamespace()->willReturn('Local\\');
 
         $this->getSrcNamespace()->shouldReturn('Local');
+    }
+
+    function it_generates_the_src_classname_from_provided_parts_using_the_locator(Locator $locator)
+    {
+        $locator->getSrcNamespace()->willReturn('Local\\');
+
+        $this->getSrcClassname()->shouldReturn('Local\\Acme\\Bundle\\DemoBundle\\Model\\User');
+    }
+
+    function it_generates_a_proper_src_classname_for_an_empty_locator_namespace(Locator $locator)
+    {
+        $locator->getSrcNamespace()->willReturn('');
+
+        $this->getSrcClassname()->shouldReturn('Acme\\Bundle\\DemoBundle\\Model\\User');
     }
 }
