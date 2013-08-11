@@ -3,6 +3,7 @@
 namespace PhpSpec\Symfony2Extension\Locator;
 
 use PhpSpec\Locator\ResourceLocatorInterface;
+use PhpSpec\Util\Filesystem;
 
 class PSR0Locator implements ResourceLocatorInterface
 {
@@ -10,30 +11,50 @@ class PSR0Locator implements ResourceLocatorInterface
 
     private $srcPath;
 
-    public function __construct($srcNamespace = '', $srcPath = 'src')
-    {
-        $this->srcPath = rtrim(realpath($srcPath), '/\\').DIRECTORY_SEPARATOR;
-        $this->srcNamespace = ltrim(trim($srcNamespace, ' \\').'\\', '\\');
-    }
+    private $specPaths = array();
 
-    public function getFullSrcPath()
-    {
-        return $this->srcPath.str_replace('\\', DIRECTORY_SEPARATOR, $this->srcNamespace);
-    }
+    private $filesystem;
 
-    public function getSrcNamespace()
+    public function __construct($srcNamespace = '', $srcPath = 'src', $specPaths = array(), Filesystem $filesystem = null)
     {
-        return $this->srcNamespace;
+        $this->srcNamespace = $srcNamespace;
+        $this->srcPath = rtrim(realpath($srcPath), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+
+        foreach ($specPaths as $specPath) {
+            $paths = glob($specPath, GLOB_ONLYDIR);
+            if (!empty($paths)) {
+                $paths = array_filter(array_map('realpath', $paths));
+                $this->specPaths = array_merge($this->specPaths, $paths);
+            }
+        }
+        $this->filesystem = $filesystem ?: new Filesystem();
     }
 
     public function getAllResources()
     {
-        // @todo: Implement getAllResources() method.
+        if (empty($this->specPaths)) {
+            return array();
+        }
+
+        $files = $this->filesystem->findPhpFilesIn($this->specPaths);
+        $resources = array();
+
+        foreach ($files as $file) {
+            $path = $file->getRealPath();
+            $relative = substr($path, strlen($this->srcPath), -4);
+            $relative = str_replace('Spec', '', $relative);
+
+            $resources[] = new PSR0Resource(array_filter(explode(DIRECTORY_SEPARATOR, $relative)), $this->srcPath);
+        }
+
+        return $resources;
     }
 
     public function supportsQuery($query)
     {
-        // @todo: Implement supportsQuery() method.
+        $path = rtrim(realpath($query), DIRECTORY_SEPARATOR);
+
+        return 0 === strpos($path, rtrim($this->srcPath, DIRECTORY_SEPARATOR));
     }
 
     public function findResources($query)
@@ -43,7 +64,9 @@ class PSR0Locator implements ResourceLocatorInterface
 
     public function supportsClass($classname)
     {
-        // @todo: Implement supportsClass() method.
+        $classname = str_replace('/', '\\', $classname);
+
+        return '' === $this->srcNamespace || 0  === strpos($classname, $this->srcNamespace);
     }
 
     public function createResource($classname)
@@ -53,6 +76,6 @@ class PSR0Locator implements ResourceLocatorInterface
 
     public function getPriority()
     {
-        // @todo: Implement getPriority() method.
+        return 0;
     }
 }
