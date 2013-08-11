@@ -22,14 +22,7 @@ class PSR0Locator implements ResourceLocatorInterface
         $this->srcNamespace = $srcNamespace;
         $this->specSubNamespace = $specSubNamespace;
         $this->srcPath = rtrim(realpath($srcPath), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-
-        foreach ($specPaths as $specPath) {
-            $paths = glob($specPath, GLOB_ONLYDIR);
-            if (!empty($paths)) {
-                $paths = array_filter(array_map('realpath', $paths));
-                $this->specPaths = array_merge($this->specPaths, $paths);
-            }
-        }
+        $this->specPaths = $this->expandSpecPaths($specPaths);
         $this->filesystem = $filesystem ?: new Filesystem();
     }
 
@@ -87,5 +80,25 @@ class PSR0Locator implements ResourceLocatorInterface
     public function getPriority()
     {
         return 0;
+    }
+
+    /**
+     * @param array $specPaths
+     *
+     * @return array
+     */
+    private function expandSpecPaths(array $specPaths)
+    {
+        $result = array();
+
+        foreach ($specPaths as $specPath) {
+            $paths = glob($specPath, GLOB_ONLYDIR);
+            if (!empty($paths)) {
+                $paths = array_filter(array_map('realpath', $paths));
+                $result = array_merge($result, $paths);
+            }
+        }
+
+        return $result;
     }
 }
