@@ -3,7 +3,6 @@
 namespace PhpSpec\Symfony2Extension\Locator;
 
 use PhpSpec\Locator\ResourceInterface;
-use PhpSpec\Symfony2Extension\Locator\PSR0Locator as Locator;
 
 class PSR0Resource implements ResourceInterface
 {
@@ -13,60 +12,123 @@ class PSR0Resource implements ResourceInterface
     private $parts;
 
     /**
-     * @var Locator
+     * @var string
      */
-    private $locator;
+    private $srcPath;
 
     /**
-     * @param array   $parts
-     * @param Locator $locator
+     * @var string
      */
-    public function __construct($parts, Locator $locator)
+    private $specSuffix;
+
+    /**
+     * @param array  $namespaceParts
+     * @param string $srcPath
+     * @param string $specSuffix
+     */
+    public function __construct($namespaceParts, $srcPath, $specSuffix = 'Spec')
     {
-        $this->parts = $parts;
-        $this->locator = $locator;
+        $this->parts = $namespaceParts;
+        $this->srcPath = $srcPath;
+        $this->specSuffix = 'Spec';
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return end($this->parts);
     }
 
+    /**
+     * @return string
+     */
     public function getSpecName()
     {
         return $this->getName().'Spec';
     }
 
+    /**
+     * @return string
+     */
     public function getSrcFilename()
     {
-        return $this->locator->getFullSrcPath().implode(DIRECTORY_SEPARATOR, $this->parts).'.php';
+        return $this->srcPath.implode(DIRECTORY_SEPARATOR, $this->parts).'.php';
     }
 
+    /**
+     * @return string
+     */
     public function getSrcNamespace()
     {
         $parts = $this->parts;
         array_pop($parts);
 
-        return rtrim($this->locator->getSrcNamespace().implode('\\', $parts), '\\');
+        return rtrim(implode('\\', $parts), '\\');
     }
 
+    /**
+     * @return string
+     */
     public function getSrcClassname()
     {
-        return $this->locator->getSrcNamespace().implode('\\', $this->parts);
+        return implode('\\', $this->parts);
     }
 
+    /**
+     * @return string
+     */
     public function getSpecFilename()
     {
-        // @todo: Implement getSpecFilename() method.
+        $parts = $this->getSpecParts();
+
+        return $this->srcPath.implode(DIRECTORY_SEPARATOR, $parts).'Spec.php';
     }
 
+    /**
+     * @return string
+     */
     public function getSpecNamespace()
     {
-        // @todo: Implement getSpecNamespace() method.
+        $parts = $this->getSpecParts();
+        array_pop($parts);
+
+        return rtrim(implode('\\', $parts), '\\');
     }
 
+    /**
+     * @return string
+     */
     public function getSpecClassname()
     {
-        // @todo: Implement getSpecClassname() method.
+        $parts = $this->getSpecParts();
+
+        return implode('\\', $parts).'Spec';
+    }
+
+    /**
+     * @return array
+     */
+    private function getSpecParts()
+    {
+        if (count($this->parts) < 2) {
+            $parts = $this->parts;
+            array_unshift($parts, $this->specSuffix);
+
+            return $parts;
+        }
+
+        $parts = array();
+
+        foreach ($this->parts as $i => $part) {
+            $parts[] = $part;
+
+            if ((1 === $i && 'Bundle' !== $part) || preg_match('/^.+Bundle$/', $part)) {
+                $parts[] = $this->specSuffix;
+            }
+        }
+
+        return $parts;
     }
 }
