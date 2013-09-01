@@ -1,4 +1,3 @@
-# split into multiple files and add missing scenarios (like run with parameters)
 Feature: Describing a controller
   As a Developer
   I want to automate creating controller specifications
@@ -8,9 +7,9 @@ Feature: Describing a controller
     Given the Symfony extension is enabled
 
   @wip
-  Scenario Outline: Controller spec is generated
-    When I describe the "<class>"
-    Then a new specification should be generated in the "Scenario1/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
+  Scenario: Controller spec is generated
+    When I describe the "Scenario1/Bundle/DemoBundle/Controller/UserController"
+    Then a new specification should be generated in the "src/Scenario1/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
     """
     <?php
 
@@ -21,18 +20,13 @@ Feature: Describing a controller
 
     class UserControllerSpec extends ControllerBehavior
     {
-        function it_is_initializable()
+        function it_is_container_aware()
         {
-            $this->shouldHaveType('Scenario1\Bundle\DemoBundle\Spec\Controller\UserController');
+            $this->shouldHaveType('Symfony\Component\DependencyInjection\ContainerAware');
         }
     }
 
     """
-
-    Examples:
-      | class                                                      |
-      | Scenario1/Bundle/DemoBundle/Controller/UserController      |
-      | Scenario1/Bundle/DemoBundle/Spec/Controller/UserController |
 
   @wip
   Scenario: Generating a controller
@@ -54,7 +48,7 @@ Feature: Describing a controller
 
   @wip
   Scenario: Executing a controller spec with a response inspection
-    Given I wrote a spec in the "Scenario5/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
+    Given I wrote a spec in the "src/Scenario5/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
     """
     <?php
 
@@ -97,7 +91,7 @@ Feature: Describing a controller
 
   @wip
   Scenario: Executing a controller spec with a service
-    Given I wrote a spec in the "Scenario6/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
+    Given I wrote a spec in the "src/Scenario6/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
     """
     <?php
 
@@ -147,7 +141,7 @@ Feature: Describing a controller
 
   @wip
   Scenario: Executing a controller spec with a render matcher
-    Given I wrote a spec in the "Scenario7/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
+    Given I wrote a spec in the "src/Scenario7/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
     """
     <?php
 
