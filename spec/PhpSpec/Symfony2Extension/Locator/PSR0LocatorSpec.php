@@ -91,6 +91,67 @@ class PSR0LocatorSpec extends ObjectBehavior
         $this->supportsQuery('/')->shouldReturn(false);
     }
 
+    function it_finds_spec_resources_via_the_srcPath(Filesystem $fs, \SplFileInfo $file)
+    {
+        $fs->findPhpFilesIn(array($this->srcPath.'Acme/Bundle/DemoBundle/Spec', $this->srcPath.'Acme/Model/Spec'))->willReturn(array($file));
+        $file->getRealPath()->willReturn($this->srcPath.'Acme/Bundle/DemoBundle/Spec/Model/UserSpec.php');
+
+        $resources = $this->findResources('src');
+        $resources->shouldHaveCount(1);
+        $resources[0]->shouldBeAnInstanceOf('PhpSpec\\Symfony2Extension\\Locator\\PSR0Resource');
+        $resources[0]->getSrcClassname()->shouldReturn('Acme\\Bundle\\DemoBundle\\Model\\User');
+    }
+
+    function it_finds_spec_resources_via_a_subSrcPath(Filesystem $fs, \SplFileInfo $file)
+    {
+        $fs->findPhpFilesIn(array($this->srcPath.'Acme/Bundle/DemoBundle/Spec'))->willReturn(array($file));
+        $file->getRealPath()->willReturn($this->srcPath.'Acme/Bundle/DemoBundle/Spec/Model/UserSpec.php');
+
+        $resources = $this->findResources('src/Acme/Bundle/DemoBundle');
+        $resources->shouldHaveCount(1);
+        $resources[0]->shouldBeAnInstanceOf('PhpSpec\\Symfony2Extension\\Locator\\PSR0Resource');
+        $resources[0]->getSrcClassname()->shouldReturn('Acme\\Bundle\\DemoBundle\\Model\\User');
+    }
+
+    function it_finds_spec_resources_via_a_specPath(Filesystem $fs, \SplFileInfo $file)
+    {
+        $fs->findPhpFilesIn(array($this->srcPath.'Acme/Bundle/DemoBundle/Spec/Model'))->willReturn(array($file));
+        $file->getRealPath()->willReturn($this->srcPath.'Acme/Bundle/DemoBundle/Spec/Model/UserSpec.php');
+
+        $resources = $this->findResources('src/Acme/Bundle/DemoBundle/Spec/Model');
+        $resources->shouldHaveCount(1);
+        $resources[0]->shouldBeAnInstanceOf('PhpSpec\\Symfony2Extension\\Locator\\PSR0Resource');
+        $resources[0]->getSrcClassname()->shouldReturn('Acme\\Bundle\\DemoBundle\\Model\\User');
+    }
+
+    function it_finds_a_single_spec_via_a_srcPath()
+    {
+        $resources = $this->findResources('src/Acme/Bundle/DemoBundle/Model/User.php');
+        $resources->shouldHaveCount(1);
+        $resources[0]->shouldBeAnInstanceOf('PhpSpec\\Symfony2Extension\\Locator\\PSR0Resource');
+        $resources[0]->getSrcClassname()->shouldReturn('Acme\\Bundle\\DemoBundle\\Model\\User');
+    }
+
+    function it_finds_a_single_spec_via_a_specPath()
+    {
+        $resources = $this->findResources('src/Acme/Bundle/DemoBundle/Spec/Model/UserSpec.php');
+        $resources->shouldHaveCount(1);
+        $resources[0]->shouldBeAnInstanceOf('PhpSpec\\Symfony2Extension\\Locator\\PSR0Resource');
+        $resources[0]->getSrcClassname()->shouldReturn('Acme\\Bundle\\DemoBundle\\Model\\User');
+    }
+
+    function it_returns_an_empty_array_if_path_does_not_exist()
+    {
+        $this->findResources('src/Acme/Bundle/MissingBundle')->shouldHaveCount(0);
+    }
+
+    function it_returns_an_empty_array_if_nothing_is_found()
+    {
+        $this->filesystem->remove($this->srcPath.'Acme');
+
+        $this->findResources('src')->shouldHaveCount(0);
+    }
+
     function it_supports_classes_from_srcNamespace(Filesystem $fs)
     {
         $this->beConstructedWith('Acme\\Model', 'Spec', 'src', array('src/*/*/Spec'), $fs);
@@ -155,7 +216,7 @@ class PSR0LocatorSpec extends ObjectBehavior
         $resource->getSpecClassname()->shouldReturn('Acme\Bundle\DemoBundle\Spec\Model\UserSpec');
     }
 
-    function it_creates_a_resource_from_a_spec_class_with_a_custom_specSubNamespace()
+    function it_creates_a_resource_from_a_spec_class_with_a_custom_specSubNamespace(Filesystem $fs)
     {
         $this->beConstructedWith('Acme', 'Specs', 'src', array('src/*/Bundle/*Bundle/Specs', 'src/*/*/Specs'), $fs);
 
