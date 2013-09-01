@@ -26,7 +26,7 @@ class PSR0Resource implements ResourceInterface
      * @param string $specSubNamespace
      * @param string $srcPath
      */
-    public function __construct($namespaceParts, $specSubNamespace = 'Spec', $srcPath = 'src')
+    public function __construct(array $namespaceParts, $specSubNamespace = 'Spec', $srcPath = 'src')
     {
         $this->parts = $namespaceParts;
         $this->srcPath = $srcPath;

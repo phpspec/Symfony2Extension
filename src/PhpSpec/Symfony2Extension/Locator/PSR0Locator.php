@@ -33,19 +33,26 @@ class PSR0Locator implements ResourceLocatorInterface
     private $filesystem;
 
     /**
-     * @param string     $srcNamespace
-     * @param string     $specSubNamespace
-     * @param string     $srcPath
-     * @param array      $specPaths
-     * @param Filesystem $filesystem
+     * @var ResourceFactory
      */
-    public function __construct($srcNamespace = '', $specSubNamespace = 'Spec', $srcPath = 'src', $specPaths = array(), Filesystem $filesystem = null)
+    private $resourceFactory;
+
+    /**
+     * @param string          $srcNamespace
+     * @param string          $specSubNamespace
+     * @param string          $srcPath
+     * @param array           $specPaths
+     * @param Filesystem      $filesystem
+     * @param ResourceFactory $resourceFactory
+     */
+    public function __construct($srcNamespace = '', $specSubNamespace = 'Spec', $srcPath = 'src', $specPaths = array(), Filesystem $filesystem = null, ResourceFactory $resourceFactory = null)
     {
         $this->srcNamespace = $srcNamespace;
         $this->specSubNamespace = $specSubNamespace;
         $this->srcPath = rtrim(realpath($srcPath), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
         $this->specPaths = $this->expandSpecPaths($specPaths);
         $this->filesystem = $filesystem ?: new Filesystem();
+        $this->resourceFactory = $resourceFactory ?: new ResourceFactory();
     }
 
     /**
@@ -202,9 +209,10 @@ class PSR0Locator implements ResourceLocatorInterface
     {
         $classname = str_replace('/', '\\', $classname);
         $classname = str_replace(array($this->specSubNamespace, 'Spec'), '', $classname);
+        $classname = str_replace('\\\\', '\\', $classname);
 
         if ('' === $this->srcNamespace || 0 === strpos($classname, $this->srcNamespace)) {
-            return new PSR0Resource(array_filter(explode('\\', $classname)), $this->specSubNamespace, $this->srcPath);
+            return $this->resourceFactory->create(explode('\\', $classname), $this->specSubNamespace, $this->srcPath);
         }
 
         return null;
