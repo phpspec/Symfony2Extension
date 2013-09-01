@@ -2,4 +2,4 @@ default:
     formatter:
         name: progress
     filters:
-        tags: "~@wip"
+        tags: "~@wip&&~@disabled"

@@ -6,10 +6,9 @@ Feature: Describing a class
   Background:
     Given the Symfony extension is enabled
 
-  @wip @dev
   Scenario: Spec is generated in the bundle
     When I describe the "Scenario1/Bundle/DemoBundle/Model/User"
-    Then a new specification should be generated in the "Scenario1/Bundle/DemoBundle/Spec/Model/UserSpec.php":
+    Then a new specification should be generated in the "src/Scenario1/Bundle/DemoBundle/Spec/Model/UserSpec.php":
     """
     <?php
 
@@ -28,13 +27,12 @@ Feature: Describing a class
 
     """
 
-  @wip
   Scenario: Running a spec
     Given I described the "Scenario2/Bundle/DemoBundle/Model/User"
     When I run phpspec
     Then I should see "class Scenario2\Bundle\DemoBundle\Model\User does not exist"
 
-  @wip
+  @disabled
   Scenario: Generating a class
     Given I described the "Scenario3/Bundle/DemoBundle/Model/User"
     When I run phpspec and answer "y" to the first question
@@ -50,9 +48,8 @@ Feature: Describing a class
 
     """
 
-  @wip
   Scenario: Executing a class spec
-    Given I wrote a spec in the "Scenario4/Bundle/DemoBundle/Spec/Model/User.php":
+    Given I wrote a spec in the "src/Scenario4/Bundle/DemoBundle/Spec/Model/User.php":
     """
     <?php
 

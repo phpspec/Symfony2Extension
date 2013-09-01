@@ -61,6 +61,8 @@ YML;
      */
     public function iRunPhpspecAndAnswerToTheFirstQuestion($answer)
     {
+        // @todo this step is now broken, since --no-interaction has been fixed in phpspec...
+
         $this->applicationTester = $this->createApplicationTester();
         $this->applicationTester->putToInputStream(sprintf("%s\n", $answer));
         $this->applicationTester->run('run --no-interaction');
