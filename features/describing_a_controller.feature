@@ -6,7 +6,6 @@ Feature: Describing a controller
   Background:
     Given the Symfony extension is enabled
 
-  @wip
   Scenario: Controller spec is generated
     When I describe the "Scenario1/Bundle/DemoBundle/Controller/UserController"
     Then a new specification should be generated in the "src/Scenario1/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
@@ -22,13 +21,13 @@ Feature: Describing a controller
     {
         function it_is_container_aware()
         {
-            $this->shouldHaveType('Symfony\Component\DependencyInjection\ContainerAware');
+            $this->shouldHaveType('Symfony\Component\DependencyInjection\ContainerAwareInterface');
         }
     }
 
     """
 
-  @wip
+  @disabled
   Scenario: Generating a controller
     Given I described the "Scenario4/Bundle/DemoBundle/Controller/UserController"
     When I run phpspec and answer "y" to the first question
@@ -46,7 +45,6 @@ Feature: Describing a controller
 
     """
 
-  @wip
   Scenario: Executing a controller spec with a response inspection
     Given I wrote a spec in the "src/Scenario5/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
     """
@@ -89,7 +87,6 @@ Feature: Describing a controller
     When I run phpspec
     Then I should see "1 example (1 passed)"
 
-  @wip
   Scenario: Executing a controller spec with a service
     Given I wrote a spec in the "src/Scenario6/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
     """

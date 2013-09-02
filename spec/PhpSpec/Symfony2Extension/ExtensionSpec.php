@@ -2,6 +2,8 @@
 
 namespace spec\PhpSpec\Symfony2Extension;
 
+use PhpSpec\CodeGenerator\TemplateRenderer;
+use PhpSpec\Console\IO;
 use PhpSpec\ObjectBehavior;
 use PhpSpec\ServiceContainer;
 use Prophecy\Argument;
@@ -10,12 +12,18 @@ class ExtensionSpec extends ObjectBehavior
 {
     private $configurator;
 
+    function let(ServiceContainer $container)
+    {
+        $container->setShared(Argument::cetera())->willReturn();
+        $container->addConfigurator(Argument::any())->willReturn();
+    }
+
     function it_is_a_phpspec_extension()
     {
         $this->shouldHaveType('PhpSpec\Extension\ExtensionInterface');
     }
 
-    function it_adds_a_custom_locator_with_configuration(ServiceContainer $container)
+    function it_registers_a_custom_locator_with_configuration(ServiceContainer $container)
     {
         $container->getParam('symfony2_locator')->willReturn(
             array(
@@ -35,6 +43,47 @@ class ExtensionSpec extends ObjectBehavior
         $this->load($container);
         $configurator = $this->configurator;
         $configurator($container->getWrappedObject());
+    }
+
+    function it_registers_runner_maintainers_for_the_container(ServiceContainer $container)
+    {
+        $container->setShared(
+            'runner.maintainers.container_initializer',
+            $this->service('PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInitializerMaintainer', $container)
+        )->shouldBeCalled();
+
+        $container->setShared(
+            'runner.maintainers.container_injector',
+            $this->service('PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInjectorMaintainer', $container)
+        )->shouldBeCalled();
+
+        $this->load($container);
+    }
+
+    function it_registers_controller_class_generator(ServiceContainer $container, IO $io, TemplateRenderer $templateRenderer)
+    {
+        $container->get('console.io')->willReturn($io);
+        $container->get('code_generator.templates')->willReturn($templateRenderer);
+
+        $container->setShared(
+            'code_generator.generators.symfony2_controller_class',
+            $this->service('PhpSpec\Symfony2Extension\CodeGenerator\ControllerClassGenerator', $container)
+        )->shouldBeCalled();
+
+        $this->load($container);
+    }
+
+    function it_registers_controller_specification_generator(ServiceContainer $container, IO $io, TemplateRenderer $templateRenderer)
+    {
+        $container->get('console.io')->willReturn($io);
+        $container->get('code_generator.templates')->willReturn($templateRenderer);
+
+        $container->setShared(
+            'code_generator.generators.symfony2_controller_specification',
+            $this->service('PhpSpec\Symfony2Extension\CodeGenerator\ControllerSpecificationGenerator', $container)
+        )->shouldBeCalled();
+
+        $this->load($container);
     }
 
     private function trackedConfigurator()
