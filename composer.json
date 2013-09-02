@@ -1,8 +1,8 @@
 {
     "name": "phpspec/symfony2-extension",
-    "description": "Symfony extension for phpspec",
+    "description": "Symfony2 extension for phpspec",
     "type": "library",
-    "keywords": ["phpspec","symfony2"],
+    "keywords": ["phpspec", "symfony2"],
     "homepage": "https://github.com/phpspec/Symfony2Extension",
     "license": "MIT",
     "require": {
