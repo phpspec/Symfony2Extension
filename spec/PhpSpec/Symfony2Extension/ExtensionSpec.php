@@ -4,8 +4,10 @@ namespace spec\PhpSpec\Symfony2Extension;
 
 use PhpSpec\CodeGenerator\TemplateRenderer;
 use PhpSpec\Console\IO;
+use PhpSpec\Formatter\Presenter\PresenterInterface;
 use PhpSpec\ObjectBehavior;
 use PhpSpec\ServiceContainer;
+use PhpSpec\Wrapper\Unwrapper;
 use Prophecy\Argument;
 
 class ExtensionSpec extends ObjectBehavior
@@ -15,6 +17,7 @@ class ExtensionSpec extends ObjectBehavior
     function let(ServiceContainer $container)
     {
         $container->setShared(Argument::cetera())->willReturn();
+        $container->set(Argument::cetera())->willReturn();
         $container->addConfigurator(Argument::any())->willReturn();
     }
 
@@ -85,6 +88,20 @@ class ExtensionSpec extends ObjectBehavior
 
         $this->load($container);
     }
+
+    function it_registers_render_matcher_maintainer(ServiceContainer $container, PresenterInterface $presenter, Unwrapper $unwrapper)
+    {
+        $container->get('formatter.presenter')->willReturn($presenter);
+        $container->get('unwrapper')->willReturn($unwrapper);
+
+        $container->set(
+            'runner.maintainers.render_matcher',
+            $this->service('PhpSpec\Symfony2Extension\Runner\Maintainer\RenderMatcherMaintainer', $container)
+        )->shouldBeCalled();
+
+        $this->load($container);
+    }
+
 
     private function trackedConfigurator()
     {

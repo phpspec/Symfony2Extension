@@ -13,6 +13,7 @@ use PhpSpec\Symfony2Extension\CodeGenerator\ControllerSpecificationGenerator;
 use PhpSpec\Symfony2Extension\Locator\PSR0Locator;
 use PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInitializerMaintainer;
 use PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInjectorMaintainer;
+use PhpSpec\Symfony2Extension\Runner\Maintainer\RenderMatcherMaintainer;
 use PhpSpec\Symfony2Extension\Specification\Container;
 
 class Extension implements ExtensionInterface
@@ -25,6 +26,7 @@ class Extension implements ExtensionInterface
         $this->registerConfigurators($container);
         $this->registerRunnerMaintainers($container);
         $this->registerCodeGenerators($container);
+        $this->registerRenderMatcherMaintainer($container);
     }
 
     /**
@@ -94,5 +96,15 @@ class Extension implements ExtensionInterface
                 return new ControllerSpecificationGenerator($c->get('console.io'), $c->get('code_generator.templates'));
             }
         );
+    }
+
+    private function registerRenderMatcherMaintainer(ServiceContainer $container)
+    {
+        $container->set('runner.maintainers.render_matcher', function($c) {
+            return new RenderMatcherMaintainer(
+                $c->get('formatter.presenter'),
+                $c->get('unwrapper')
+            );
+        });
     }
 }

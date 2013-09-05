@@ -136,7 +136,6 @@ Feature: Describing a controller
     When I run phpspec
     Then I should see "1 example (1 passed)"
 
-  @wip
   Scenario: Executing a controller spec with a render matcher
     Given I wrote a spec in the "src/Scenario7/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
     """
@@ -146,7 +145,7 @@ Feature: Describing a controller
 
     use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
     use Prophecy\Argument;
-    use Symfony\Component\Templating\EngineInterface;
+    use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
     class UserControllerSpec extends ControllerBehavior
     {
@@ -166,9 +165,9 @@ Feature: Describing a controller
 
     namespace Scenario7\Bundle\DemoBundle\Controller;
 
-    use Symfony\Component\DependencyInjection\ContainerAware;
+    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-    class UserController extends ContainerAware
+    class UserController extends Controller
     {
         public function listAction()
         {

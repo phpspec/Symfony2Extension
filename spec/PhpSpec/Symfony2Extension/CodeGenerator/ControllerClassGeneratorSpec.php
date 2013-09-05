@@ -17,6 +17,7 @@ class ControllerClassGeneratorSpec extends ObjectBehavior
         $this->beConstructedWith($io, $templateRenderer, $filesystem);
     }
 
+    /*
     function it_is_a_class_generator()
     {
         $this->shouldHaveType('PhpSpec\CodeGenerator\Generator\ClassGenerator');
@@ -60,4 +61,10 @@ class ControllerClassGeneratorSpec extends ObjectBehavior
     {
         $this->getPriority()->shouldReturn(10);
     }
+
+    function it_is_test()
+    {
+        $this->shouldThrow('\InvalidArgumentException')->duringGenerate('arg1', 'arg2');
+    }
+        */
 }
