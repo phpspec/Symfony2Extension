@@ -42,9 +42,11 @@ class ApplicationTester
      */
     public function run($input, array $options = array())
     {
-        $this->input = new StringInput($input);
-        if (isset($options['interactive'])) {
-            $this->input->setInteractive($options['interactive']);
+        if (isset($options['interactive']) && $options['interactive']) {
+            $this->input = new InteractiveStringInput($input);
+        } else {
+            $this->input = new StringInput($input);
+            $this->input->setInteractive(false);
         }
 
         $this->output = new StreamOutput(fopen('php://memory', 'w', false));

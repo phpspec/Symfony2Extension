@@ -27,7 +27,6 @@ Feature: Describing a controller
 
     """
 
-  @disabled
   Scenario: Generating a controller
     Given I described the "Scenario4/Bundle/DemoBundle/Controller/UserController"
     When I run phpspec and answer "y" to the first question
