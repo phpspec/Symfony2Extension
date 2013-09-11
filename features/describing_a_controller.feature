@@ -154,7 +154,7 @@ Feature: Describing a controller
             $this->container->set('templating', $templating);
 
             $this->shouldRender('Scenario7UserBundle:User:list.html.twig', array('users' => array()))
-                ->duringAction('list');
+                ->duringListAction();
         }
     }
 
@@ -165,9 +165,9 @@ Feature: Describing a controller
 
     namespace Scenario7\Bundle\DemoBundle\Controller;
 
-    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+    use Symfony\Component\DependencyInjection\ContainerAware;
 
-    class UserController extends Controller
+    class UserController extends ContainerAware
     {
         public function listAction()
         {

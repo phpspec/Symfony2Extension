@@ -17,7 +17,6 @@ class ExtensionSpec extends ObjectBehavior
     function let(ServiceContainer $container)
     {
         $container->setShared(Argument::cetera())->willReturn();
-        $container->set(Argument::cetera())->willReturn();
         $container->addConfigurator(Argument::any())->willReturn();
     }
 
@@ -94,7 +93,7 @@ class ExtensionSpec extends ObjectBehavior
         $container->get('formatter.presenter')->willReturn($presenter);
         $container->get('unwrapper')->willReturn($unwrapper);
 
-        $container->set(
+        $container->setShared(
             'runner.maintainers.render_matcher',
             $this->service('PhpSpec\Symfony2Extension\Runner\Maintainer\RenderMatcherMaintainer', $container)
         )->shouldBeCalled();

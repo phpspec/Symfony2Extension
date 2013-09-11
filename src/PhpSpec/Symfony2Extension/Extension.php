@@ -26,7 +26,6 @@ class Extension implements ExtensionInterface
         $this->registerConfigurators($container);
         $this->registerRunnerMaintainers($container);
         $this->registerCodeGenerators($container);
-        $this->registerRenderMatcherMaintainer($container);
     }
 
     /**
@@ -47,6 +46,13 @@ class Extension implements ExtensionInterface
                 return new ContainerInjectorMaintainer();
             }
         );
+
+        $container->setShared('runner.maintainers.render_matcher', function($c) {
+            return new RenderMatcherMaintainer(
+                $c->get('formatter.presenter'),
+                $c->get('unwrapper')
+            );
+        });
     }
 
     /**
@@ -96,15 +102,5 @@ class Extension implements ExtensionInterface
                 return new ControllerSpecificationGenerator($c->get('console.io'), $c->get('code_generator.templates'));
             }
         );
-    }
-
-    private function registerRenderMatcherMaintainer(ServiceContainer $container)
-    {
-        $container->set('runner.maintainers.render_matcher', function($c) {
-            return new RenderMatcherMaintainer(
-                $c->get('formatter.presenter'),
-                $c->get('unwrapper')
-            );
-        });
     }
 }

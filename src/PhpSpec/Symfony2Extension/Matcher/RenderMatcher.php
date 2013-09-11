@@ -11,11 +11,11 @@ use PhpSpec\Wrapper\Unwrapper;
 use Prophecy\Argument;
 use Prophecy\Exception\Doubler\MethodNotFoundException;
 use Prophecy\Prophecy\MethodProphecy;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class RenderMatcher implements MatcherInterface
 {
-    private static $ignoredProperties = array('file', 'line', 'string', 'trace', 'previous');
     private $unwrapper;
     private $presenter;
 
@@ -28,7 +28,7 @@ class RenderMatcher implements MatcherInterface
 
     public function supports($name, $subject, array $arguments)
     {
-        return $name === 'render' && $subject instanceof Controller;
+        return $name === 'render' && $subject instanceof ContainerAwareInterface;
     }
 
     public function positiveMatch($name, $subject, array $arguments)
@@ -46,26 +46,33 @@ class RenderMatcher implements MatcherInterface
         return 150;
     }
 
-    public function verifyPositive(Controller $controller, $action, $templateName, $templateArgs = array())
+    public function verifyPositive(ContainerAwareInterface $controller, $action, $templateName, $templateArgs = array())
     {
-        $methodProphecy = new MethodProphecy($controller->get('templating')->getProphecy(), 'renderResponse', array(
+        $container = $this->getContainer($controller);
+
+        $methodProphecy = new MethodProphecy($container->get('templating')->getProphecy(), 'renderResponse', array(
             $templateName,
             $templateArgs
         ));
 
         $methodProphecy->shouldBeCalled();
-        $controller->get('templating')->getProphecy()->addMethodProphecy($methodProphecy);
+        $container->get('templating')->getProphecy()->addMethodProphecy($methodProphecy);
         $controller->$action();
 
         return true;
     }
 
-    public function verifyNegative(Controller $controller, $action, $templateName, $templateArgs = array())
+    public function verifyNegative(ContainerAwareInterface $controller, $action, $templateName, $templateArgs = array())
     {
-        $methodProphecy = new MethodProphecy($controller->get('templating')->getProphecy(), 'renderResponse', Argument::type('array'));
+        $container = $this->getContainer($controller);
+
+        $methodProphecy = new MethodProphecy($container->get('templating')->getProphecy(), 'renderResponse', array(
+            $templateName,
+            $templateArgs
+        ));
 
         $methodProphecy->shouldNotBeCalled();
-        $controller->get('templating')->getProphecy()->addMethodProphecy($methodProphecy);
+        $container->get('templating')->getProphecy()->addMethodProphecy($methodProphecy);
         $controller->$action();
 
         return true;
@@ -81,16 +88,12 @@ class RenderMatcher implements MatcherInterface
             function ($method, $arguments) use($check, $subject, $template, $templateArgs, $unwrapper) {
                 $arguments = $unwrapper->unwrapAll($arguments);
 
-                if (!is_array($arguments) || !isset($arguments[0]) || !is_string($arguments[0])) {
-                    throw new MatcherException("Action name is required as a callable argument.");
-                }
-
-                $action = $arguments[0];
-
-                if ($method !== 'duringAction') {
+                if (preg_match('/^during(.+)Action$/', $method, $matches)) {
+                    $action = lcfirst($matches[1]);
+                } else {
                     throw new MatcherException(sprintf(
                         "'Wrong callable name passed.\n".
-                        "\"duringAction\" expected,\n".
+                        "Name that match \"/^during(.+)Action$/'\" regex expected,\n".
                         "Got %s.",
                         $method
                     ));
@@ -136,5 +139,43 @@ class RenderMatcher implements MatcherInterface
             "Got %s.",
             $this->presenter->presentValue($arguments[1])
         ));
+    }
+
+    private function getContainer(ContainerAwareInterface $controller)
+    {
+        $reflection = new \ReflectionObject($controller);
+        $container = null;
+
+        if ($reflection->hasProperty('container')) {
+            $containerProperty = $reflection->getProperty('container');
+
+            $isPublic = $containerProperty->isPublic();
+            $containerProperty->setAccessible(true);
+            $container = $containerProperty->getValue($controller);
+            $containerProperty->setAccessible($isPublic);
+        }
+
+        if (!isset($container) || !$container instanceof ContainerInterface) {
+            $properies = $reflection->getProperties();
+
+            foreach ($properies as $property) {
+                $isPublic = $property->isPublic();
+                $property->setAccessible(true);
+                $container = $property->getValue($controller);
+                $property->setAccessible($isPublic);
+
+                if (isset($container) && $container instanceof ContainerInterface) {
+                    break;
+                }
+
+                $container = null;
+            }
+        }
+
+        if (!isset($container) || !$container instanceof ContainerInterface) {
+            throw new \RuntimeException(sprintf('%s does not have a container', $reflection->getShortName()));
+        }
+
+        return $container;
     }
 }
