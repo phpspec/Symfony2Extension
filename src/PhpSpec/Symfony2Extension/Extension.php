@@ -14,6 +14,8 @@ use PhpSpec\Symfony2Extension\Locator\PSR0Locator;
 use PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInitializerMaintainer;
 use PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInjectorMaintainer;
 use PhpSpec\Symfony2Extension\Specification\Container;
+use PhpSpec\Symfony2Extension\Runner\Collaborator\CollaboratorFactory;
+use PhpSpec\Symfony2Extension\Runner\Maintainer\CommonCollaboratorsMaintainer;
 
 class Extension implements ExtensionInterface
 {
@@ -43,6 +45,26 @@ class Extension implements ExtensionInterface
             'runner.maintainers.container_injector',
             function ($c) {
                 return new ContainerInjectorMaintainer();
+            }
+        );
+
+        $container->setShared(
+            'runner.maintainers.common_collaborators',
+            function ($c) {
+                return new CommonCollaboratorsMaintainer(
+                    $c->get('unwrapper'),
+                    $c->get('collaborator_factory'),
+                    array()
+                );
+            }
+        );
+
+        $container->setShared(
+            'collaborator_factory',
+            function ($c) {
+                return new CollaboratorFactory(
+                    $c->get('unwrapper')
+                );
             }
         );
     }
