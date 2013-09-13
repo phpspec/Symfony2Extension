@@ -22,8 +22,11 @@ class Extension implements ExtensionInterface
     /**
      * @param ServiceContainer $container
      */
-    public function load(ServiceContainer $container)
+    public function load(ServiceContainer $container, array $params = array())
     {
+        foreach ($params as $key => $value) {
+            $container->setParam('symfony2_extension.'.$key, $value);
+        }
         $this->registerConfigurators($container);
         $this->registerRunnerMaintainers($container);
         $this->registerCodeGenerators($container);
@@ -54,7 +57,7 @@ class Extension implements ExtensionInterface
                 return new CommonCollaboratorsMaintainer(
                     $c->get('unwrapper'),
                     $c->get('collaborator_factory'),
-                    array()
+                    $c->getParam('symfony2_extension.common-collaborators', array())
                 );
             }
         );

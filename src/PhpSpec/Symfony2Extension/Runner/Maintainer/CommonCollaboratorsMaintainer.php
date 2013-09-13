@@ -24,18 +24,13 @@ class CommonCollaboratorsMaintainer implements MaintainerInterface
         // @TODO avoid indirect deps ?
         $this->unwrapper = $unwrapper;
         $this->factory = $factory;
+
+        // @TODO should we ? or via extension config ?
         $this->commonCollaborators = $commonCollaborators ?: array(
             'router' => 'Symfony\Component\Routing\RouterInterface',
             'session' => 'Symfony\Component\HttpFoundation\Session\Session',
             'request' => 'Symfony\Component\HttpFoundation\Request',
             //'securityContext' => 'SecurityContextIterface',
-        );
-
-        $this->commonServices = $commonServices ?: array(
-            'router' => 'router',
-            'session' => 'session',
-            'request' => 'request',
-            //'securityContext' => 'security.context',
         );
     }
 
@@ -58,13 +53,14 @@ class CommonCollaboratorsMaintainer implements MaintainerInterface
             $collaborators->set('container', $container);
         }
 
-        foreach ($this->commonCollaborators as $name => $className) {
+        foreach ($this->commonCollaborators as $name => $service) {
+            list($id, $class) = $this->extractCollaboratorConfig($name, $service);
             if (!$collaborators->has($name)) {
-                $collaborator = $this->factory->create($this->prophet->prophesize(), $className);
+                $collaborator = $this->factory->create($this->prophet->prophesize(), $class);
                 $collaborators->set($name, $collaborator);
 
                 if ($collaborators->has('container')) {
-                    $collaborators->get('container')->get($this->commonServices[$name])->willReturn($collaborator);
+                    $collaborators->get('container')->get($id)->willReturn($collaborator);
                 }
             }
         }
@@ -78,5 +74,14 @@ class CommonCollaboratorsMaintainer implements MaintainerInterface
     public function getPriority()
     {
         return 60; // more than CollaboratorsMaintainer :/
+    }
+
+    private function extractCollaboratorConfig($name, $config)
+    {
+        if (is_array($config)) {
+            return each($config);
+        }
+
+        return array($name, $config);
     }
 }
