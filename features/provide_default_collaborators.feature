@@ -18,12 +18,13 @@ Feature: Provide default collaborators
 
     namespace CommonCollaborator\Spec;
 
-    use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
+    use PhpSpec\ObjectBehavior;
 
-    class Controller extends ControllerBehavior
+    class Controller extends ObjectBehavior
     {
-        function it_has_access_to_router($router) // magic!
+        function it_has_access_to_router($container, $router) // magic!
         {
+            $this->setContainer($container);
             $this->generateUrl('homepage')->shouldHaveType('string');
         }
     }

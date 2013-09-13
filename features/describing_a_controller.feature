@@ -14,10 +14,10 @@ Feature: Describing a controller
 
     namespace Scenario1\Bundle\DemoBundle\Spec\Controller;
 
-    use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
+    use PhpSpec\ObjectBehavior;
     use Prophecy\Argument;
 
-    class UserControllerSpec extends ControllerBehavior
+    class UserControllerSpec extends ObjectBehavior
     {
         function it_is_container_aware()
         {
@@ -52,13 +52,14 @@ Feature: Describing a controller
 
     namespace Scenario5\Bundle\DemoBundle\Spec\Controller;
 
-    use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
+    use PhpSpec\ObjectBehavior;
     use Prophecy\Argument;
 
-    class UserControllerSpec extends ControllerBehavior
+    class UserControllerSpec extends ObjectBehavior
     {
-        function it_should_respond_to_the_list_action_call()
+        function it_should_respond_to_the_list_action_call($container)
         {
+            $this->setContainer($container);
             $response = $this->listAction();
             $response->shouldHaveType('Symfony\Component\HttpFoundation\Response');
             $response->getStatusCode()->shouldBe(200);
@@ -94,15 +95,16 @@ Feature: Describing a controller
 
     namespace Scenario6\Bundle\DemoBundle\Spec\Controller;
 
-    use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
+    use PhpSpec\ObjectBehavior;
     use Prophecy\Argument;
     use Symfony\Component\Routing\Router;
 
-    class UserControllerSpec extends ControllerBehavior
+    class UserControllerSpec extends ObjectBehavior
     {
-        function it_should_redirect_to_the_homepage(Router $router)
+        function it_should_redirect_to_the_homepage(Router $router, $container)
         {
-            $this->container->set('router', $router);
+            $this->setContainer($container);
+            $container->set('router', $router);
 
             $router->generate('homepage')->willReturn('/');
 
@@ -144,15 +146,16 @@ Feature: Describing a controller
 
     namespace Scenario7\Bundle\DemoBundle\Spec\Controller;
 
-    use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
+    use PhpSpec\ObjectBehavior;
     use Prophecy\Argument;
     use Symfony\Component\Templating\EngineInterface;
 
-    class UserControllerSpec extends ControllerBehavior
+    class UserControllerSpec extends ObjectBehavior
     {
-        function it_should_render_list_of_users(EngineInterface $templating)
+        function it_should_render_list_of_users(EngineInterface $templating, $container)
         {
-            $this->container->set('templating', $templating);
+            $this->setContainer($container);
+            $container->set('templating', $templating);
 
             $this->shouldRender('Scenario7UserBundle:User:list.html.twig', array('users' => array()))
                 ->duringAction('list');

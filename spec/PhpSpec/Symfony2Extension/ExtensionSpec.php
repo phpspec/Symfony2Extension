@@ -7,6 +7,8 @@ use PhpSpec\Console\IO;
 use PhpSpec\ObjectBehavior;
 use PhpSpec\ServiceContainer;
 use Prophecy\Argument;
+use PhpSpec\Wrapper\Unwrapper;
+use PhpSpec\Symfony2Extension\Runner\CollaboratorFactory;
 
 class ExtensionSpec extends ObjectBehavior
 {
@@ -45,17 +47,21 @@ class ExtensionSpec extends ObjectBehavior
         $configurator($container->getWrappedObject());
     }
 
-    function it_registers_runner_maintainers_for_the_container(ServiceContainer $container)
+    function it_registers_runner_maintainers_for_the_container(ServiceContainer $container, Unwrapper $unwrapper, CollaboratorFactory $factory)
     {
         $container->setShared(
-            'runner.maintainers.container_initializer',
-            $this->service('PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInitializerMaintainer', $container)
+            'runner.maintainers.common_collaborators',
+            $this->service('PhpSpec\Symfony2Extension\Runner\Maintainer\CommonCollaboratorsMaintainer', $container)
         )->shouldBeCalled();
 
         $container->setShared(
-            'runner.maintainers.container_injector',
-            $this->service('PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInjectorMaintainer', $container)
+            'collaborator_factory',
+            $this->service('PhpSpec\Symfony2Extension\Runner\CollaboratorFactory', $container)
         )->shouldBeCalled();
+
+        $container->getParam('symfony2_extension.common-collaborators', array())->willReturn(array());
+        $container->get('collaborator_factory')->willReturn($factory);
+        $container->get('unwrapper')->willReturn($unwrapper);
 
         $this->load($container);
     }

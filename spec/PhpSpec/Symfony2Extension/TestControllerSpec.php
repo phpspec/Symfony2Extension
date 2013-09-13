@@ -2,10 +2,10 @@
 
 namespace spec\PhpSpec\Symfony2Extension;
 
-use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
+use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class TestControllerSpec extends ControllerBehavior
+class TestControllerSpec extends ObjectBehavior
 {
     public function it_generates_url($container, $router)
     {

@@ -36,9 +36,15 @@ class CommonCollaboratorsMaintainer implements MaintainerInterface
 
     public function supports(ExampleNode $example)
     {
-        $specClassName = $example->getSpecification()->getClassReflection()->getName();
+        $class = $example->getSpecification()->getResource()->getSrcClassname();
+        try {
+            $srcRefl = new \ReflectionClass($class);
 
-        return in_array('PhpSpec\Symfony2Extension\Specification\ControllerBehavior', class_parents($specClassName));
+            return $srcRefl->implementsInterface('Symfony\Component\DependencyInjection\ContainerAwareInterface');
+        }
+        catch(\Exception $e) {
+            return false;
+        }
     }
 
     public function prepare(ExampleNode $example, SpecificationInterface $context, MatcherManager $matchers, CollaboratorManager $collaborators)

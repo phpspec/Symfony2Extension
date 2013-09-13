@@ -11,9 +11,6 @@ use PhpSpec\ServiceContainer;
 use PhpSpec\Symfony2Extension\CodeGenerator\ControllerClassGenerator;
 use PhpSpec\Symfony2Extension\CodeGenerator\ControllerSpecificationGenerator;
 use PhpSpec\Symfony2Extension\Locator\PSR0Locator;
-use PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInitializerMaintainer;
-use PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInjectorMaintainer;
-use PhpSpec\Symfony2Extension\Specification\Container;
 use PhpSpec\Symfony2Extension\Runner\CollaboratorFactory;
 use PhpSpec\Symfony2Extension\Runner\Maintainer\CommonCollaboratorsMaintainer;
 
@@ -37,20 +34,6 @@ class Extension implements ExtensionInterface
      */
     private function registerRunnerMaintainers(ServiceContainer $container)
     {
-        $container->setShared(
-            'runner.maintainers.container_initializer',
-            function ($c) {
-                return new ContainerInitializerMaintainer();
-            }
-        );
-
-        $container->setShared(
-            'runner.maintainers.container_injector',
-            function ($c) {
-                return new ContainerInjectorMaintainer();
-            }
-        );
-
         $container->setShared(
             'runner.maintainers.common_collaborators',
             function ($c) {
