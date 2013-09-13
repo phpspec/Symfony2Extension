@@ -10,6 +10,7 @@ class TestControllerSpec extends ControllerBehavior
     public function it_generates_url($container, $router)
     {
         $this->setContainer($container);
-        $this->generateUrl('homepage')->shouldReturn('test');
+        $router->generate('homepage', array(), false)->willReturn('/');
+        $this->generateUrl('homepage')->shouldReturn('/');
     }
 }

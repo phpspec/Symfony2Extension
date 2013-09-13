@@ -14,7 +14,7 @@ use PhpSpec\Symfony2Extension\Locator\PSR0Locator;
 use PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInitializerMaintainer;
 use PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInjectorMaintainer;
 use PhpSpec\Symfony2Extension\Specification\Container;
-use PhpSpec\Symfony2Extension\Runner\Collaborator\CollaboratorFactory;
+use PhpSpec\Symfony2Extension\Runner\CollaboratorFactory;
 use PhpSpec\Symfony2Extension\Runner\Maintainer\CommonCollaboratorsMaintainer;
 
 class Extension implements ExtensionInterface

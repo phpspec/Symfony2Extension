@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\Symfony2Extension\Spec\Runner\Collaborator;
+namespace spec\PhpSpec\Symfony2Extension\Runner;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -15,6 +15,6 @@ class CollaboratorFactorySpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('Php\Symfony2Extension\Runner\Collaborator\CollaboratorFactory');
+        $this->shouldHaveType('PhpSpec\Symfony2Extension\Runner\CollaboratorFactory');
     }
 }

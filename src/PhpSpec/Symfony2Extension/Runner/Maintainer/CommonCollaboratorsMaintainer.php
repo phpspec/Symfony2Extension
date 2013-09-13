@@ -7,7 +7,7 @@ use PhpSpec\Loader\Node\ExampleNode;
 use PhpSpec\SpecificationInterface;
 use PhpSpec\Runner\CollaboratorManager;
 use PhpSpec\Runner\MatcherManager;
-use PhpSpec\Symfony2Extension\Runner\Collaborator\CollaboratorFactory;
+use PhpSpec\Symfony2Extension\Runner\CollaboratorFactory;
 use Prophecy\Prophet;
 use PhpSpec\Wrapper\Unwrapper;
 

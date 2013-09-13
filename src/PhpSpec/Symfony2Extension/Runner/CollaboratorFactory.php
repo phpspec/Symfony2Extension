@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpSpec\Symfony2Extension\Runner\Collaborator;
+namespace PhpSpec\Symfony2Extension\Runner;
 
 use PhpSpec\Wrapper\Unwrapper;
 use PhpSpec\Wrapper\Collaborator;

@@ -5,7 +5,7 @@ namespace spec\PhpSpec\Symfony2Extension\Runner\Maintainer;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use PhpSpec\Wrapper\Unwrapper;
-use PhpSpec\Symfony2Extension\Runner\Collaborator\CollaboratorFactory;
+use PhpSpec\Symfony2Extension\Runner\CollaboratorFactory;
 
 class CommonCollaboratorsMaintainerSpec extends ObjectBehavior
 {
