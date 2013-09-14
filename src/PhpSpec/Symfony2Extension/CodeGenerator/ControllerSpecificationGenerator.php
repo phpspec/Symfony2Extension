@@ -40,7 +40,7 @@ __halt_compiler();<?php
 
 namespace %namespace%;
 
-use PhpSpec\ObjectBehavior
+use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class %name% extends ObjectBehavior
