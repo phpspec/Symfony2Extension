@@ -13,34 +13,35 @@ Feature: Provide default collaborators
             router: Symfony\Component\Routing\RouterInterface
         """
 
-  Scenario: Controller has access to common collaborator
-    Given I wrote a spec in the "src/CommonCollaborator/Spec/Controller.php":
+  Scenario: Controller spec has access to common collaborators
+    Given I wrote a spec in the "src/Scenario7/Bundle/DemoBundle/Spec/Controller/UserControllerSpec.php":
     """
     <?php
 
-    namespace CommonCollaborator\Spec;
+    namespace Scenario7\Bundle\DemoBundle\Spec\Controller;
 
     use PhpSpec\ObjectBehavior;
+    use Prophecy\Argument;
 
-    class Controller extends ObjectBehavior
+    class UserControllerSpec extends ObjectBehavior
     {
-        function it_has_access_to_router($container, $router) // magic!
+        function its_generateUrl_generates_urls($container)
         {
             $this->setContainer($container);
-            $this->generateUrl('homepage')->shouldHaveType('string');
+            $this->generateUrl('homepage');
         }
     }
 
     """
-    And I wrote a class in the "src/CommonCollaborator/Controller.php":
+    And I wrote a class in the "src/Scenario7/Bundle/DemoBundle/Controller/UserController.php":
     """
     <?php
 
-    namespace CommonCollaborator;
+    namespace Scenario7\Bundle\DemoBundle\Controller;
 
-    use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
+    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-    class Controller extends BaseController
+    class UserController extends Controller
     {
     }
 
