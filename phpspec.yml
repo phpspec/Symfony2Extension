@@ -1,7 +1,8 @@
 extensions:
-    PhpSpec\Symfony2Extension\Extension:
-        common-collaborators:
-            # append: false # should we support append ? (ie: provide defaults)
-            router: Symfony\Component\Routing\RouterInterface
-            request: Symfony\Component\HttpFoundation\Request
-            #formFactory: { form.factory: FormFactoryInterface }
+    - PhpSpec\Symfony2Extension\Extension
+
+symfony2_extension.common-collaborators:
+    # append: false # should we support append ? (ie: provide defaults)
+    router: Symfony\Component\Routing\RouterInterface
+    request: Symfony\Component\HttpFoundation\Request
+    #formFactory: { form.factory: FormFactoryInterface }

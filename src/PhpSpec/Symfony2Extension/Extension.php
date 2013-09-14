@@ -19,11 +19,11 @@ class Extension implements ExtensionInterface
     /**
      * @param ServiceContainer $container
      */
-    public function load(ServiceContainer $container, array $params = array())
+    public function load(ServiceContainer $container) //, array $params = array())
     {
-        foreach ($params as $key => $value) {
-            $container->setParam('symfony2_extension.'.$key, $value);
-        }
+        //foreach ($params as $key => $value) {
+        //    $container->setParam('symfony2_extension.'.$key, $value);
+        //}
         $this->registerConfigurators($container);
         $this->registerRunnerMaintainers($container);
         $this->registerCodeGenerators($container);

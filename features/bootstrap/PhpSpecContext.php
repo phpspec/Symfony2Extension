@@ -41,7 +41,7 @@ class PhpSpecContext extends BehatContext
     {
         $yml = <<<YML
 extensions:
-    PhpSpec\Symfony2Extension\Extension: ~
+    - PhpSpec\Symfony2Extension\Extension
 YML;
         file_put_contents($this->workDir.'phpspec.yml', $yml);
     }

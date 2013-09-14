@@ -7,8 +7,10 @@ Feature: Provide default collaborators
     Given the Symfony extension is enabled with:
         """
         extensions:
-            PhpSpec\Symfony2Extension\Extension:
-                router: Symfony\Component\Routing\RouterInterface
+            - PhpSpec\Symfony2Extension\Extension
+
+        symfony2_extension.common-collaborators:
+            router: Symfony\Component\Routing\RouterInterface
         """
 
   Scenario: Controller has access to common collaborator
