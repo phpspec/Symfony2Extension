@@ -9,11 +9,13 @@ class InitializerFactory implements FactoryInterface
 {
     private $factory;
     private $initializers;
+    private $commonCollaborators;
 
-    public function __construct(FactoryInterface $factory, array $initializers = array())
+    public function __construct(FactoryInterface $factory, array $initializers = array(), array $commonCollaborators = array())
     {
         $this->factory = $factory;
         $this->initializers = $initializers;
+        $this->commonCollaborators = $commonCollaborators;
     }
 
     public function create(CollaboratorManager $collaborators, ObjectProphecy $prophecy, $name, $className = null)
@@ -34,8 +36,10 @@ class InitializerFactory implements FactoryInterface
 
     function postInitialize(CollaboratorManager $collaborators)
     {
-        foreach ($this->initializers as $initializer) {
-            $initializer->postInitialize($collaborators);
+        foreach ($this->commonCollaborators as $name => $config) {
+            if ($initializer = $this->getInitializer($name)) {
+                $initializer->postInitialize($collaborators);
+            }
         }
     }
 

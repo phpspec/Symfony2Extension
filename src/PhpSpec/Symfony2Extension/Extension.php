@@ -11,8 +11,8 @@ use PhpSpec\ServiceContainer;
 use PhpSpec\Symfony2Extension\CodeGenerator\ControllerClassGenerator;
 use PhpSpec\Symfony2Extension\CodeGenerator\ControllerSpecificationGenerator;
 use PhpSpec\Symfony2Extension\Locator\PSR0Locator;
-use PhpSpec\Symfony2Extension\Runner\Collaborator\DefaultFactory;
 use PhpSpec\Symfony2Extension\Runner\Maintainer\CommonCollaboratorsMaintainer;
+use PhpSpec\Symfony2Extension\Runner\Collaborator\DefaultFactory;
 use PhpSpec\Symfony2Extension\Runner\Collaborator\InitializerFactory;
 use PhpSpec\Symfony2Extension\Runner\Collaborator\Initializer;
 
@@ -56,7 +56,8 @@ class Extension implements ExtensionInterface
         $container->setShared('collaborator_factory', function ($c) {
             return new InitializerFactory(
                 $c->get('collaborator_factory.default'),
-                $c->getByPrefix('collaborator.initializer')
+                $c->getByPrefix('collaborator.initializer'),
+                $c->getParam('symfony2_extension.common-collaborators', array())
             );
         });
 
@@ -70,6 +71,10 @@ class Extension implements ExtensionInterface
             return new Initializer\Request;
         });
 
+        $container->setShared('collaborator.initializer.session', function ($c) {
+            return new Initializer\Session;
+        });
+
         $container->setShared('collaborator.initializer.router', function ($c) {
             return new Initializer\Router;
         });
@@ -79,7 +84,7 @@ class Extension implements ExtensionInterface
         });
 
         $container->setShared('collaborator.initializer.doctrine', function ($c) {
-            return new Initializer\Router;
+            return new Initializer\Doctrine;
         });
     }
 

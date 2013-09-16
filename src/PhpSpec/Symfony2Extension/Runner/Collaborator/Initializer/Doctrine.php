@@ -3,8 +3,7 @@
 namespace PhpSpec\Symfony2Extension\Runner\Collaborator\Initializer;
 
 use PhpSpec\Symfony2Extension\Runner\Collaborator\InitializerInterface;
-use PhpSpec\Wrapper\Collaborator;
-use Symfony\Component\HttpFoundation\ParameterBag;
+use PhpSpec\Runner\CollaboratorManager;
 
 class Doctrine implements InitializerInterface
 {

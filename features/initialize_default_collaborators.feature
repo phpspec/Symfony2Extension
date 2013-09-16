@@ -13,6 +13,8 @@ Feature: Initialize default collaborators
             container: ~
             router: ~
             request: ~
+            session: ~
+            doctrine: ~
         """
 
   Scenario: Controller spec has access to common collaborators

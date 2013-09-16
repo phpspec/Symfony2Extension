@@ -53,7 +53,7 @@ class CommonCollaboratorsMaintainer implements MaintainerInterface
                 $class
             );
         }
-        $this->factory->postInitialize($collaborators);
+        $this->factory->postInitialize($collaborators, array_keys($this->commonCollaborators));
     }
 
     public function teardown(ExampleNode $example, SpecificationInterface $context, MatcherManager $matchers, CollaboratorManager $collaborators)

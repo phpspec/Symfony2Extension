@@ -6,4 +6,6 @@ symfony2_extension.common-collaborators:
     container: ~
     router: ~
     request: ~
+    session: ~
+    doctrine: ~
     #formFactory: { form.factory: FormFactoryInterface }

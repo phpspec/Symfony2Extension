@@ -8,9 +8,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TestControllerSpec extends ObjectBehavior
 {
-    public function it_generates_url($container, $router, $request)
+    public function it_generates_url($container, $router, $request, $doctrine)
     {
         $this->setContainer($container);
+        $doctrine->getManager();
         $this->generateUrl('homepage')->shouldReturn('homepage');
     }
 }
