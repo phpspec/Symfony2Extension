@@ -7,7 +7,7 @@ use PhpSpec\Loader\Node\ExampleNode;
 use PhpSpec\SpecificationInterface;
 use PhpSpec\Runner\CollaboratorManager;
 use PhpSpec\Runner\MatcherManager;
-use PhpSpec\Symfony2Extension\Runner\CollaboratorFactory;
+use PhpSpec\Symfony2Extension\Runner\Collaborator\FactoryInterface;
 use Prophecy\Prophet;
 use PhpSpec\Wrapper\Unwrapper;
 
@@ -16,16 +16,15 @@ class CommonCollaboratorsMaintainer implements MaintainerInterface
     private $unwrapper;
     private $factory;
     private $commonCollaborators;
-    private $commonServices;
     private $prophet;
 
-    public function __construct(Unwrapper $unwrapper, CollaboratorFactory $factory, array $commonCollaborators = array(), array $commonServices = array())
+    public function __construct(Unwrapper $unwrapper, FactoryInterface $factory, array $commonCollaborators = array())
     {
         // @TODO avoid indirect deps ?
         $this->unwrapper = $unwrapper;
         $this->factory = $factory;
 
-        // @TODO should we ? or via extension config ?
+        // @TODO should we ? and/or via extension config ?
         $this->commonCollaborators = $commonCollaborators ?: array(
             'router' => 'Symfony\Component\Routing\RouterInterface',
             'session' => 'Symfony\Component\HttpFoundation\Session\Session',
@@ -54,6 +53,7 @@ class CommonCollaboratorsMaintainer implements MaintainerInterface
         if (!$collaborators->has('container')) {
             $container = $this->factory->create(
                 $this->prophet->prophesize(),
+                'container',
                 'Symfony\Component\DependencyInjection\ContainerInterface'
             );
             $collaborators->set('container', $container);
@@ -62,12 +62,10 @@ class CommonCollaboratorsMaintainer implements MaintainerInterface
         foreach ($this->commonCollaborators as $name => $service) {
             list($id, $class) = $this->extractCollaboratorConfig($name, $service);
             if (!$collaborators->has($name)) {
-                $collaborator = $this->factory->create($this->prophet->prophesize(), $class);
+                $collaborator = $this->factory->create($this->prophet->prophesize(), $name, $class);
                 $collaborators->set($name, $collaborator);
 
-                if ($collaborators->has('container')) {
-                    $collaborators->get('container')->get($id)->willReturn($collaborator);
-                }
+                $collaborators->get('container')->get($id)->willReturn($collaborator);
             }
         }
     }

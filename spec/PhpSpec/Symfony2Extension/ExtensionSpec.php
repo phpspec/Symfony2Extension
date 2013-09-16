@@ -8,7 +8,7 @@ use PhpSpec\ObjectBehavior;
 use PhpSpec\ServiceContainer;
 use Prophecy\Argument;
 use PhpSpec\Wrapper\Unwrapper;
-use PhpSpec\Symfony2Extension\Runner\CollaboratorFactory;
+use PhpSpec\Symfony2Extension\Runner\Collaborator\FactoryInterface;
 
 class ExtensionSpec extends ObjectBehavior
 {
@@ -18,6 +18,9 @@ class ExtensionSpec extends ObjectBehavior
     {
         $container->setShared(Argument::cetera())->willReturn();
         $container->addConfigurator(Argument::any())->willReturn();
+        $container->getByPrefix(Argument::any())->willReturn(array());
+        $container->setParam(Argument::cetera())->willReturn();
+        $container->getParam(Argument::cetera())->willReturn();
     }
 
     function it_is_a_phpspec_extension()
@@ -47,7 +50,7 @@ class ExtensionSpec extends ObjectBehavior
         $configurator($container->getWrappedObject());
     }
 
-    function it_registers_runner_maintainers_for_the_container(ServiceContainer $container, Unwrapper $unwrapper, CollaboratorFactory $factory)
+    function it_registers_runner_maintainers_for_the_container(ServiceContainer $container, Unwrapper $unwrapper, FactoryInterface $factory)
     {
         $container->setShared(
             'runner.maintainers.common_collaborators',
@@ -55,12 +58,19 @@ class ExtensionSpec extends ObjectBehavior
         )->shouldBeCalled();
 
         $container->setShared(
-            'collaborator_factory',
-            $this->service('PhpSpec\Symfony2Extension\Runner\CollaboratorFactory', $container)
+            'collaborator_factory.default',
+            $this->service('PhpSpec\Symfony2Extension\Runner\Collaborator\DefaultFactory', $container)
         )->shouldBeCalled();
 
+        $container->setShared(
+            'collaborator_factory',
+            $this->service('PhpSpec\Symfony2Extension\Runner\Collaborator\InitializerFactory', $container)
+        )->shouldBeCalled();
+
+        $container->getByPrefix('collaborator.initializers')->willReturn(array());
         $container->getParam('symfony2_extension.common-collaborators', array())->willReturn(array());
         $container->get('collaborator_factory')->willReturn($factory);
+        $container->get('collaborator_factory.default')->willReturn($factory);
         $container->get('unwrapper')->willReturn($unwrapper);
 
         $this->load($container);

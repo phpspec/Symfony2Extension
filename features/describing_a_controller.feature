@@ -101,7 +101,7 @@ Feature: Describing a controller
 
     class UserControllerSpec extends ObjectBehavior
     {
-        function it_should_redirect_to_the_homepage(Router $router, $container)
+        function it_should_redirect_to_the_homepage($router, $container)
         {
             $this->setContainer($container);
             $container->set('router', $router);

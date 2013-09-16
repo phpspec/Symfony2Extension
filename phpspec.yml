@@ -3,6 +3,6 @@ extensions:
 
 symfony2_extension.common-collaborators:
     # append: false # should we support append ? (ie: provide defaults)
-    router: Symfony\Component\Routing\RouterInterface
-    request: Symfony\Component\HttpFoundation\Request
+    router: ~
+    request: ~
     #formFactory: { form.factory: FormFactoryInterface }

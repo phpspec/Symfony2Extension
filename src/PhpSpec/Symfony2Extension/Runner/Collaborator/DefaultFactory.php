@@ -1,12 +1,12 @@
 <?php
 
-namespace PhpSpec\Symfony2Extension\Runner;
+namespace PhpSpec\Symfony2Extension\Runner\Collaborator;
 
 use PhpSpec\Wrapper\Unwrapper;
 use PhpSpec\Wrapper\Collaborator;
 use Prophecy\Prophecy\ObjectProphecy;
 
-class CollaboratorFactory
+class DefaultFactory implements FactoryInterface
 {
     private $unwrapper;
 
@@ -15,7 +15,7 @@ class CollaboratorFactory
         $this->unwrapper = $unwrapper;
     }
 
-    public function create(ObjectProphecy $prophecy, $className = null, array $arguments = array())
+    public function create(ObjectProphecy $prophecy, $name, $className = null, array $arguments = array())
     {
         $collaborator = new Collaborator($prophecy, $this->unwrapper);
         if (null !== $className) {
