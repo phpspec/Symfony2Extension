@@ -8,4 +8,6 @@ symfony2_extension.common-collaborators:
     request: ~
     session: ~
     doctrine: ~
+    em: ~
+    repository: ~
     #formFactory: { form.factory: FormFactoryInterface }

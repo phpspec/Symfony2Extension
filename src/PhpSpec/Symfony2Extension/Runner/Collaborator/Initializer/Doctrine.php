@@ -4,6 +4,7 @@ namespace PhpSpec\Symfony2Extension\Runner\Collaborator\Initializer;
 
 use PhpSpec\Symfony2Extension\Runner\Collaborator\InitializerInterface;
 use PhpSpec\Runner\CollaboratorManager;
+use Prophecy\Argument;
 
 class Doctrine implements InitializerInterface
 {
@@ -19,6 +20,12 @@ class Doctrine implements InitializerInterface
         switch ($name) {
             case 'doctrine':
                 return $this->initDoctrine($collaborators, $className);
+            case 'em':
+            case 'om':
+            case 'dm':
+                return $this->initManager($collaborators, $className);
+            case 'repository':
+                return $this->initRepository($collaborators, $className);
             default:
                 return;
         }
@@ -26,9 +33,8 @@ class Doctrine implements InitializerInterface
 
     public function postInitialize(CollaboratorManager $collaborators)
     {
-        if ($collaborators->has('em')) {
-            $doctrine->getManager()->willReturn($collaborators->get('em'));
-        }
+        $collaborators->get('doctrine')->getManager()->willReturn($collaborators->get('em'));
+        $collaborators->get('doctrine')->getRepository(Argument::type('string'))->willReturn($collaborators->get('repository'));
     }
 
     public function supports($name)
@@ -42,5 +48,23 @@ class Doctrine implements InitializerInterface
         if (null === $className) {
             $doctrine->beADoubleOf('Doctrine\Common\Persistence\ManagerRegistry');
         }
+    }
+
+    private function initManager(CollaboratorManager $collaborators, $className)
+    {
+        $em = $collaborators->get('em');
+        if (null === $className) {
+            $em->beADoubleOf('Doctrine\Common\Persistence\ObjectManager');
+        }
+    }
+
+    private function initRepository(CollaboratorManager $collaborators, $className)
+    {
+        $repository = $collaborators->get('repository');
+        if (null === $className) {
+            $repository->beADoubleOf('Doctrine\Common\Persistence\ObjectRepository');
+        }
+
+        $repository->findAll()->willReturn(array());
     }
 }
