@@ -3,6 +3,7 @@
 namespace PhpSpec\Symfony2Extension\Runner\Collaborator;
 
 use Prophecy\Prophecy\ObjectProphecy;
+use PhpSpec\Runner\CollaboratorManager;
 
 class InitializerFactory implements FactoryInterface
 {
@@ -15,14 +16,27 @@ class InitializerFactory implements FactoryInterface
         $this->initializers = $initializers;
     }
 
-    public function create(ObjectProphecy $prophecy, $name, $className = null, array $arguments = array())
+    public function create(CollaboratorManager $collaborators, ObjectProphecy $prophecy, $name, $className = null)
     {
-        $collaborator = $this->factory->create($prophecy, $name, $className, $arguments);
+        if (!$collaborators->has($name)) {
+            $collaborator = $this->factory->create($collaborators, $prophecy, $name, $className);
+            $collaborators->set($name, $collaborator);
+        }
+        else {
+            $collaborator = $collaborators->get($name);
+        }
         if ($initializer = $this->getInitializer($name)) {
-            $initializer->initialize($collaborator, $className, $arguments);
+            $initializer->initialize($collaborators, $name, $className);
         }
 
         return $collaborator;
+    }
+
+    function postInitialize(CollaboratorManager $collaborators)
+    {
+        foreach ($this->initializers as $initializer) {
+            $initializer->postInitialize($collaborators);
+        }
     }
 
     private function getInitializer($name)

@@ -2,14 +2,19 @@
 
 namespace PhpSpec\Symfony2Extension\Runner\Collaborator;
 
-use PhpSpec\Wrapper\Collaborator;
+use PhpSpec\Runner\CollaboratorManager;
 
 interface InitializerInterface
 {
     /**
      * add common default behavior to a collaborator
      **/
-    public function initialize(Collaborator $collaborator, $className, array $arguments);
+    public function initialize(CollaboratorManager $collaborators, $name, $className = null);
+
+    /**
+     * add more behaviors with knowledge of other collaborators
+     **/
+    public function postInitialize(CollaboratorManager $collaborators);
 
     /**
      * return bool if supports the collaborator name

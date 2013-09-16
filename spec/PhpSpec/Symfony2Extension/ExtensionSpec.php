@@ -9,6 +9,7 @@ use PhpSpec\ServiceContainer;
 use Prophecy\Argument;
 use PhpSpec\Wrapper\Unwrapper;
 use PhpSpec\Symfony2Extension\Runner\Collaborator\FactoryInterface;
+use PhpSpec\Symfony2Extension\Runner\Collaborator\InitializerFactory;
 
 class ExtensionSpec extends ObjectBehavior
 {
@@ -50,7 +51,7 @@ class ExtensionSpec extends ObjectBehavior
         $configurator($container->getWrappedObject());
     }
 
-    function it_registers_runner_maintainers_for_the_container(ServiceContainer $container, Unwrapper $unwrapper, FactoryInterface $factory)
+    function it_registers_runner_maintainers_for_the_container(ServiceContainer $container, Unwrapper $unwrapper, FactoryInterface $defaultFactory, InitializerFactory $factory)
     {
         $container->setShared(
             'runner.maintainers.common_collaborators',
@@ -70,7 +71,7 @@ class ExtensionSpec extends ObjectBehavior
         $container->getByPrefix('collaborator.initializers')->willReturn(array());
         $container->getParam('symfony2_extension.common-collaborators', array())->willReturn(array());
         $container->get('collaborator_factory')->willReturn($factory);
-        $container->get('collaborator_factory.default')->willReturn($factory);
+        $container->get('collaborator_factory.default')->willReturn($defaultFactory);
         $container->get('unwrapper')->willReturn($unwrapper);
 
         $this->load($container);

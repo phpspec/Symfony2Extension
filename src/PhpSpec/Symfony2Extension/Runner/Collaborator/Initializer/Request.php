@@ -3,7 +3,7 @@
 namespace PhpSpec\Symfony2Extension\Runner\Collaborator\Initializer;
 
 use PhpSpec\Symfony2Extension\Runner\Collaborator\InitializerInterface;
-use PhpSpec\Wrapper\Collaborator;
+use PhpSpec\Runner\CollaboratorManager;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class Request implements InitializerInterface
@@ -15,12 +15,18 @@ class Request implements InitializerInterface
         $this->name = $name;
     }
 
-    public function initialize(Collaborator $collaborator, $className, array $arguments)
+    public function initialize(CollaboratorManager $collaborators, $name, $className = null)
     {
+        $request = $collaborators->get($name);
         if (null === $className) {
-            $collaborator->beADoubleOf('Symfony\Component\HttpFoundation\Request');
+            $request->beADoubleOf('Symfony\Component\HttpFoundation\Request');
         }
-        $collaborator->attributes = new ParameterBag;
+        $request->attributes = new ParameterBag;
+    }
+
+    public function postInitialize(CollaboratorManager $collaborators)
+    {
+
     }
 
     public function supports($name)

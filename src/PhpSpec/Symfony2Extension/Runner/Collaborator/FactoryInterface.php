@@ -3,8 +3,9 @@
 namespace PhpSpec\Symfony2Extension\Runner\Collaborator;
 
 use Prophecy\Prophecy\ObjectProphecy;
+use PhpSpec\Runner\CollaboratorManager;
 
 interface FactoryInterface
 {
-    public function create(ObjectProphecy $prophecy, $name, $className = null, array $arguments = array());
+    public function create(CollaboratorManager $collaborators, ObjectProphecy $prophecy, $name, $className = null);
 }

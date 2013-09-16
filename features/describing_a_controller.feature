@@ -57,9 +57,8 @@ Feature: Describing a controller
 
     class UserControllerSpec extends ObjectBehavior
     {
-        function it_should_respond_to_the_list_action_call($container)
+        function it_should_respond_to_the_list_action_call()
         {
-            $this->setContainer($container);
             $response = $this->listAction();
             $response->shouldHaveType('Symfony\Component\HttpFoundation\Response');
             $response->getStatusCode()->shouldBe(200);
@@ -98,13 +97,14 @@ Feature: Describing a controller
     use PhpSpec\ObjectBehavior;
     use Prophecy\Argument;
     use Symfony\Component\Routing\Router;
+    use Symfony\Component\DependencyInjection\ContainerInterface;
 
     class UserControllerSpec extends ObjectBehavior
     {
-        function it_should_redirect_to_the_homepage($router, $container)
+        function it_should_redirect_to_the_homepage(Router $router, ContainerInterface $container)
         {
             $this->setContainer($container);
-            $container->set('router', $router);
+            $container->get('router')->willReturn($router);
 
             $router->generate('homepage')->willReturn('/');
 
@@ -149,13 +149,14 @@ Feature: Describing a controller
     use PhpSpec\ObjectBehavior;
     use Prophecy\Argument;
     use Symfony\Component\Templating\EngineInterface;
+    use Symfony\Component\DependencyInjection\ContainerInterface;
 
     class UserControllerSpec extends ObjectBehavior
     {
-        function it_should_render_list_of_users(EngineInterface $templating, $container)
+        function it_should_render_list_of_users(EngineInterface $templating, ContainerInterface $container)
         {
             $this->setContainer($container);
-            $container->set('templating', $templating);
+            $container->get('templating')->willReturn($templating);
 
             $this->shouldRender('Scenario7UserBundle:User:list.html.twig', array('users' => array()))
                 ->duringAction('list');

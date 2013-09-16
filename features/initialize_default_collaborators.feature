@@ -10,6 +10,7 @@ Feature: Initialize default collaborators
             - PhpSpec\Symfony2Extension\Extension
 
         symfony2_extension.common-collaborators:
+            container: ~
             router: ~
             request: ~
         """

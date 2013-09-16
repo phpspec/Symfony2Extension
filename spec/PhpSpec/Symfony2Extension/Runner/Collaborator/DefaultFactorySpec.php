@@ -6,6 +6,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use PhpSpec\Wrapper\Unwrapper;
 use Prophecy\Prophecy\ObjectProphecy;
+use PhpSpec\Runner\CollaboratorManager;
 
 class DefaultFactorySpec extends ObjectBehavior
 {
@@ -19,8 +20,8 @@ class DefaultFactorySpec extends ObjectBehavior
         $this->shouldHaveType('PhpSpec\Symfony2Extension\Runner\Collaborator\DefaultFactory');
     }
 
-    function its_create_should_create_collaborators(ObjectProphecy $prophecy)
+    function its_create_should_create_collaborators(CollaboratorManager $collaborators, ObjectProphecy $prophecy)
     {
-        $this->create($prophecy, 'router', 'Symfony\Component\Routing\RouterInterface')->shouldHaveType('PhpSpec\Wrapper\Collaborator');
+        $this->create($collaborators, $prophecy, 'router', 'Symfony\Component\Routing\RouterInterface')->shouldHaveType('PhpSpec\Wrapper\Collaborator');
     }
 }

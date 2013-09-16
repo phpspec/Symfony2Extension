@@ -7,9 +7,9 @@ use PhpSpec\Loader\Node\ExampleNode;
 use PhpSpec\SpecificationInterface;
 use PhpSpec\Runner\CollaboratorManager;
 use PhpSpec\Runner\MatcherManager;
-use PhpSpec\Symfony2Extension\Runner\Collaborator\FactoryInterface;
 use Prophecy\Prophet;
 use PhpSpec\Wrapper\Unwrapper;
+use PhpSpec\Symfony2Extension\Runner\Collaborator\InitializerFactory;
 
 class CommonCollaboratorsMaintainer implements MaintainerInterface
 {
@@ -18,19 +18,12 @@ class CommonCollaboratorsMaintainer implements MaintainerInterface
     private $commonCollaborators;
     private $prophet;
 
-    public function __construct(Unwrapper $unwrapper, FactoryInterface $factory, array $commonCollaborators = array())
+    public function __construct(Unwrapper $unwrapper, InitializerFactory $factory, array $commonCollaborators = array())
     {
-        // @TODO avoid indirect deps ?
-        $this->unwrapper = $unwrapper;
+        $this->unwrapper = $unwrapper; // @TODO avoid indirect deps
         $this->factory = $factory;
 
-        // @TODO should we ? and/or via extension config ?
-        $this->commonCollaborators = $commonCollaborators ?: array(
-            'router' => 'Symfony\Component\Routing\RouterInterface',
-            'session' => 'Symfony\Component\HttpFoundation\Session\Session',
-            'request' => 'Symfony\Component\HttpFoundation\Request',
-            //'securityContext' => 'SecurityContextIterface',
-        );
+        $this->commonCollaborators = $commonCollaborators;
     }
 
     public function supports(ExampleNode $example)
@@ -50,24 +43,17 @@ class CommonCollaboratorsMaintainer implements MaintainerInterface
     {
         $this->prophet = new Prophet(null, $this->unwrapper, null);
 
-        if (!$collaborators->has('container')) {
-            $container = $this->factory->create(
-                $this->prophet->prophesize(),
-                'container',
-                'Symfony\Component\DependencyInjection\ContainerInterface'
-            );
-            $collaborators->set('container', $container);
-        }
-
         foreach ($this->commonCollaborators as $name => $service) {
             list($id, $class) = $this->extractCollaboratorConfig($name, $service);
-            if (!$collaborators->has($name)) {
-                $collaborator = $this->factory->create($this->prophet->prophesize(), $name, $class);
-                $collaborators->set($name, $collaborator);
 
-                $collaborators->get('container')->get($id)->willReturn($collaborator);
-            }
+            $collaborator = $this->factory->create(
+                $collaborators,
+                $this->prophet->prophesize(),
+                $name,
+                $class
+            );
         }
+        $this->factory->postInitialize($collaborators);
     }
 
     public function teardown(ExampleNode $example, SpecificationInterface $context, MatcherManager $matchers, CollaboratorManager $collaborators)

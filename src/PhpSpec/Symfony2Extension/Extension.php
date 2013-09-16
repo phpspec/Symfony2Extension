@@ -60,11 +60,25 @@ class Extension implements ExtensionInterface
             );
         });
 
+        $container->setShared('collaborator.initializer.container', function ($c) {
+            return new Initializer\Container(
+                $c->getParam('symfony2_extension.common-collaborators', array())
+            );
+        }); // first!
+
         $container->setShared('collaborator.initializer.request', function ($c) {
             return new Initializer\Request;
         });
 
         $container->setShared('collaborator.initializer.router', function ($c) {
+            return new Initializer\Router;
+        });
+
+        $container->setShared('collaborator.initializer.templating', function ($c) {
+            return new Initializer\Router;
+        });
+
+        $container->setShared('collaborator.initializer.doctrine', function ($c) {
             return new Initializer\Router;
         });
     }

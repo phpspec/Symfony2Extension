@@ -5,11 +5,11 @@ namespace spec\PhpSpec\Symfony2Extension\Runner\Maintainer;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use PhpSpec\Wrapper\Unwrapper;
-use PhpSpec\Symfony2Extension\Runner\Collaborator\FactoryInterface;
+use PhpSpec\Symfony2Extension\Runner\Collaborator\InitializerFactory;
 
 class CommonCollaboratorsMaintainerSpec extends ObjectBehavior
 {
-    public function let(Unwrapper $unwrapper, FactoryInterface $factory)
+    public function let(Unwrapper $unwrapper, InitializerFactory $factory)
     {
         $this->beConstructedWith($unwrapper, $factory, array());
     }

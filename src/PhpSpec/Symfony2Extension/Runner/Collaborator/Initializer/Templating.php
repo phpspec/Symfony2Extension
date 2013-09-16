@@ -3,7 +3,7 @@
 namespace PhpSpec\Symfony2Extension\Runner\Collaborator\Initializer;
 
 use PhpSpec\Symfony2Extension\Runner\Collaborator\InitializerInterface;
-use PhpSpec\Wrapper\Collaborator;
+use PhpSpec\Runner\CollaboratorManager;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class Templating implements InitializerInterface
@@ -15,12 +15,18 @@ class Templating implements InitializerInterface
         $this->name = $name;
     }
 
-    public function initialize(Collaborator $collaborator, $className, array $arguments)
+    public function initialize(CollaboratorManager $collaborators, $name, $className = null)
     {
+        $collaborator = $collaborators->get($name);
         if (null === $className) {
-            $collaborator->beADoubleOf('Symfony\Bundle\FrameworkBundle\Templating\EngineInterface');
+            $templating->beADoubleOf('Symfony\Bundle\FrameworkBundle\Templating\EngineInterface');
         }
-        $collaborator->renderResponse(Argument::cetera())->willReturnArgument();
+        $templating->renderResponse(Argument::cetera())->willReturnArgument();
+    }
+
+    public function postInitialize(CollaboratorManager $collaborators)
+    {
+
     }
 
     public function supports($name)

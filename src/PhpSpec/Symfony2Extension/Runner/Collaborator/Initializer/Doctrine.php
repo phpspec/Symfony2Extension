@@ -15,16 +15,33 @@ class Doctrine implements InitializerInterface
         );
     }
 
-    public function initialize(Collaborator $collaborator, $className, array $arguments)
+    public function initialize(CollaboratorManager $collaborators, $name, $className = null)
     {
-        if (null === $className) {
-            $collaborator->beADoubleOf('Symfony\Bundle\FrameworkBundle\Templating\EngineInterface');
+        switch ($name) {
+            case 'doctrine':
+                return $this->initDoctrine($collaborators, $className);
+            default:
+                return;
         }
-        $collaborator->renderResponse(Argument::cetera())->willReturnArgument();
+    }
+
+    public function postInitialize(CollaboratorManager $collaborators)
+    {
+        if ($collaborators->has('em')) {
+            $doctrine->getManager()->willReturn($collaborators->get('em'));
+        }
     }
 
     public function supports($name)
     {
         return in_array($name, $this->names);
+    }
+
+    private function initDoctrine(CollaboratorManager $collaborators, $className)
+    {
+        $doctrine = $collaborators->get('doctrine');
+        if (null === $className) {
+            $doctrine->beADoubleOf('Doctrine\Common\Persistence\ManagerRegistry');
+        }
     }
 }
