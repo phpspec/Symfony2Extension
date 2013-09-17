@@ -33,8 +33,15 @@ class Doctrine implements InitializerInterface
 
     public function postInitialize(CollaboratorManager $collaborators)
     {
-        $collaborators->get('doctrine')->getManager()->willReturn($collaborators->get('em'));
-        $collaborators->get('doctrine')->getRepository(Argument::type('string'))->willReturn($collaborators->get('repository'));
+        if ($collaborators->has('em')) {
+            $collaborators->get('doctrine')->getManager()->willReturn($collaborators->get('em'));
+        }
+        if ($collaborators->has('repository')) {
+            $collaborators->get('doctrine')
+                ->getRepository(Argument::type('string'))
+                ->willReturn($collaborators->get('repository'))
+            ;
+        }
     }
 
     public function supports($name)
