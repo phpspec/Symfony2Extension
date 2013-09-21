@@ -29,13 +29,24 @@ class Container implements InitializerInterface
     public function postInitialize(CollaboratorManager $collaborators)
     {
         foreach ($this->commonCollaborators as $name => $config) {
-            $collaborators->get('container')->has($name)->willReturn(true);
-            $collaborators->get('container')->get($name)->willReturn($collaborators->get($name));
+            list($id, $class) = $this->extractCollaboratorConfig($name, $config);
+
+            $collaborators->get('container')->has($id)->willReturn(true);
+            $collaborators->get('container')->get($id)->willReturn($collaborators->get($name));
         }
     }
 
     public function supports($name)
     {
         return $this->name === $name;
+    }
+
+    private function extractCollaboratorConfig($name, $config)
+    {
+        if (is_array($config)) {
+            return each($config);
+        }
+
+        return array($name, $config);
     }
 }

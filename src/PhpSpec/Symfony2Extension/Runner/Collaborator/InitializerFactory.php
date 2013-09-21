@@ -34,7 +34,7 @@ class InitializerFactory implements FactoryInterface
         return $collaborator;
     }
 
-    function postInitialize(CollaboratorManager $collaborators)
+    public function postInitialize(CollaboratorManager $collaborators)
     {
         foreach ($this->commonCollaborators as $name => $config) {
             if ($initializer = $this->getInitializer($name)) {
