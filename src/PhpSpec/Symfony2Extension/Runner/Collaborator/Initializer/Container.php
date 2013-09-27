@@ -31,8 +31,8 @@ class Container implements InitializerInterface
         foreach ($this->commonCollaborators as $name => $config) {
             list($id, $class) = $this->extractCollaboratorConfig($name, $config);
 
-            $collaborators->get('container')->has($id)->willReturn(true);
-            $collaborators->get('container')->get($id)->willReturn($collaborators->get($name));
+            $collaborators->get($this->name)->has($id)->willReturn(true);
+            $collaborators->get($this->name)->get($id)->willReturn($collaborators->get($name));
         }
     }
 
