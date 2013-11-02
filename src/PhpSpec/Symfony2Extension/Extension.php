@@ -35,7 +35,7 @@ class Extension implements ExtensionInterface
         $container->setShared(
             'runner.maintainers.container_initializer',
             function ($c) {
-                return new ContainerInitializerMaintainer();
+                return new ContainerInitializerMaintainer($c->get('unwrapper'));
             }
         );
 

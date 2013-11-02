@@ -101,7 +101,7 @@ Feature: Describing a controller
     {
         function it_should_redirect_to_the_homepage(Router $router)
         {
-            $this->container->set('router', $router);
+            $this->container->get('router')->willReturn($router);
 
             $router->generate('homepage')->willReturn('/');
 
@@ -151,7 +151,7 @@ Feature: Describing a controller
     {
         function it_should_render_list_of_users(EngineInterface $templating)
         {
-            $this->container->set('templating', $templating);
+            $this->container->get('templating')->willReturn($templating);
 
             $this->shouldRender('Scenario7UserBundle:User:list.html.twig', array('users' => array()))
                 ->duringAction('list');

@@ -9,7 +9,9 @@ use PhpSpec\Runner\CollaboratorManager;
 use PhpSpec\Runner\MatcherManager;
 use PhpSpec\SpecificationInterface;
 use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
+use PhpSpec\Wrapper\Unwrapper;
 use Prophecy\Argument;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class UserControllerSpec extends ControllerBehavior
 {
@@ -21,8 +23,10 @@ class UserSpec extends ObjectBehavior
 
 class ContainerInitializerMaintainerSpec extends ObjectBehavior
 {
-    function let(ExampleNode $example, SpecificationNode $specification, \ReflectionClass $classReflection)
+    function let(Unwrapper $unwrapper, ExampleNode $example, SpecificationNode $specification, \ReflectionClass $classReflection)
     {
+        $this->beConstructedWith($unwrapper);
+
         $example->getSpecification()->willReturn($specification);
         $specification->getClassReflection()->willReturn($classReflection);
     }
@@ -56,12 +60,31 @@ class ContainerInitializerMaintainerSpec extends ObjectBehavior
         $this->supports($example)->shouldReturn(false);
     }
 
-    function it_creates_the_container(ExampleNode $example, SpecificationInterface $context, MatcherManager $matchers, CollaboratorManager $collaborators, \ReflectionClass $classReflection, \ReflectionProperty $property)
+    function it_sets_the_container_if_found_in_collaborators(ExampleNode $example, SpecificationInterface $context, MatcherManager $matchers, CollaboratorManager $collaborators, \ReflectionClass $classReflection, \ReflectionProperty $property, ContainerInterface $container)
     {
         $classReflection->getProperty('container')->willReturn($property);
 
+        $collaborators->has('container')->willReturn(true);
+        $collaborators->get('container')->willReturn($container);
+
         $property->setAccessible(true)->shouldBeCalled();
-        $property->setValue($context, Argument::type('PhpSpec\\Symfony2Extension\\Specification\\Container'))->shouldBeCalled();
+        $property->setValue($context, $container)->shouldBeCalled();
+
+        $this->prepare($example, $context, $matchers, $collaborators);
+    }
+
+    function it_creates_the_container_collaborator_if_it_is_not_found(ExampleNode $example, SpecificationInterface $context, MatcherManager $matchers, CollaboratorManager $collaborators, \ReflectionClass $classReflection, \ReflectionProperty $property, ContainerInterface $container)
+    {
+        $classReflection->getProperty('container')->willReturn($property);
+
+        $collaborators->has('container')->willReturn(false);
+        $collaborators->set('container', Argument::type('Symfony\Component\DependencyInjection\ContainerInterface'))
+            ->will(function ($arguments, $collaborators) {
+                $collaborators->get('container')->willReturn($arguments[1]);
+            });
+
+        $property->setAccessible(true)->shouldBeCalled();
+        $property->setValue($context, Argument::type('Symfony\Component\DependencyInjection\ContainerInterface'))->shouldBeCalled();
 
         $this->prepare($example, $context, $matchers, $collaborators);
     }

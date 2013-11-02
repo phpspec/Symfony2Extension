@@ -6,6 +6,7 @@ use PhpSpec\CodeGenerator\TemplateRenderer;
 use PhpSpec\Console\IO;
 use PhpSpec\ObjectBehavior;
 use PhpSpec\ServiceContainer;
+use PhpSpec\Wrapper\Unwrapper;
 use Prophecy\Argument;
 
 class ExtensionSpec extends ObjectBehavior
@@ -45,8 +46,10 @@ class ExtensionSpec extends ObjectBehavior
         $configurator($container->getWrappedObject());
     }
 
-    function it_registers_runner_maintainers_for_the_container(ServiceContainer $container)
+    function it_registers_runner_maintainers_for_the_container(ServiceContainer $container, Unwrapper $unwrapper)
     {
+        $container->get('unwrapper')->willReturn($unwrapper);
+
         $container->setShared(
             'runner.maintainers.container_initializer',
             $this->service('PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInitializerMaintainer', $container)

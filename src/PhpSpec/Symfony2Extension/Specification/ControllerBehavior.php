@@ -3,20 +3,20 @@
 namespace PhpSpec\Symfony2Extension\Specification;
 
 use PhpSpec\ObjectBehavior;
-use PhpSpec\Symfony2Extension\Specification\Container;
 use PhpSpec\Wrapper\Subject;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ControllerBehavior extends ObjectBehavior
 {
     /**
-     * @var Container|null
+     * @var ContainerInterface|null
      */
     protected $container;
 
     /**
-     * @param Container $container
+     * @param ContainerInterface $container
      */
-    public function setContainer(Container $container)
+    public function setContainer(ContainerInterface $container)
     {
         $this->container = $container;
 

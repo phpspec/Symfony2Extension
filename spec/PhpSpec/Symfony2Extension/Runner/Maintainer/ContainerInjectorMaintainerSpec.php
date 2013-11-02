@@ -7,9 +7,9 @@ use PhpSpec\Loader\Node\SpecificationNode;
 use PhpSpec\ObjectBehavior;
 use PhpSpec\Runner\CollaboratorManager;
 use PhpSpec\Runner\MatcherManager;
-use PhpSpec\Symfony2Extension\Specification\Container;
 use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
 use Prophecy\Argument;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ContainerInjectorMaintainerSpec extends ObjectBehavior
 {
@@ -24,7 +24,7 @@ class ContainerInjectorMaintainerSpec extends ObjectBehavior
         $this->shouldHaveType('PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerMaintainer');
     }
 
-    function it_injects_the_container_into_the_subject(ExampleNode $example, ControllerBehavior $context, MatcherManager $matchers, CollaboratorManager $collaborators, \ReflectionClass $classReflection, \ReflectionProperty $property, Container $container)
+    function it_injects_the_container_into_the_subject(ExampleNode $example, ControllerBehavior $context, MatcherManager $matchers, CollaboratorManager $collaborators, \ReflectionClass $classReflection, \ReflectionProperty $property, ContainerInterface $container)
     {
         $classReflection->getProperty('container')->willReturn($property);
 
