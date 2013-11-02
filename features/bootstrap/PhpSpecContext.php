@@ -22,7 +22,7 @@ class PhpSpecContext extends BehatContext
         // paths between scenarios.
         $this->workDir = sys_get_temp_dir().'/PhpSpecSymfony2Extension/';
 
-        mkdir($this->workDir, 0777, true);
+        @mkdir($this->workDir, 0777, true);
         chdir($this->workDir);
     }
 
@@ -39,12 +39,19 @@ class PhpSpecContext extends BehatContext
      */
     public function theSymfonyExtendsionIsEnabled()
     {
-        $phpspecyml = <<<YML
+        $yml = <<<YML
 extensions:
-  - PhpSpec\Symfony2Extension\Extension
+    - PhpSpec\Symfony2Extension\Extension
 YML;
+        file_put_contents($this->workDir.'phpspec.yml', $yml);
+    }
 
-        file_put_contents($this->workDir.'phpspec.yml', $phpspecyml);
+    /**
+     * @Given /^(?:|the )Symfony extension is enabled with:$/
+     */
+    public function theSymfonyExtendsionIsEnabledWith(PyStringNode $yml = null)
+    {
+        file_put_contents($this->workDir.'phpspec.yml', $yml);
     }
 
     /**
@@ -81,7 +88,7 @@ YML;
      */
     public function iWroteSpecInThe($file, PyStringNode $string)
     {
-        mkdir(dirname($file), 0777, true);
+        @mkdir(dirname($file), 0777, true);
 
         file_put_contents($file, $string->getRaw());
 

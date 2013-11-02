@@ -7,6 +7,9 @@ use PhpSpec\Console\IO;
 use PhpSpec\ObjectBehavior;
 use PhpSpec\ServiceContainer;
 use Prophecy\Argument;
+use PhpSpec\Wrapper\Unwrapper;
+use PhpSpec\Symfony2Extension\Runner\Collaborator\FactoryInterface;
+use PhpSpec\Symfony2Extension\Runner\Collaborator\InitializerFactory;
 
 class ExtensionSpec extends ObjectBehavior
 {
@@ -16,6 +19,9 @@ class ExtensionSpec extends ObjectBehavior
     {
         $container->setShared(Argument::cetera())->willReturn();
         $container->addConfigurator(Argument::any())->willReturn();
+        $container->getByPrefix(Argument::any())->willReturn(array());
+        $container->setParam(Argument::cetera())->willReturn();
+        $container->getParam(Argument::cetera())->willReturn();
     }
 
     function it_is_a_phpspec_extension()
@@ -45,17 +51,28 @@ class ExtensionSpec extends ObjectBehavior
         $configurator($container->getWrappedObject());
     }
 
-    function it_registers_runner_maintainers_for_the_container(ServiceContainer $container)
+    function it_registers_runner_maintainers_for_the_container(ServiceContainer $container, Unwrapper $unwrapper, FactoryInterface $defaultFactory, InitializerFactory $factory)
     {
         $container->setShared(
-            'runner.maintainers.container_initializer',
-            $this->service('PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInitializerMaintainer', $container)
+            'runner.maintainers.common_collaborators',
+            $this->service('PhpSpec\Symfony2Extension\Runner\Maintainer\CommonCollaboratorsMaintainer', $container)
         )->shouldBeCalled();
 
         $container->setShared(
-            'runner.maintainers.container_injector',
-            $this->service('PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInjectorMaintainer', $container)
+            'collaborator_factory.default',
+            $this->service('PhpSpec\Symfony2Extension\Runner\Collaborator\DefaultFactory', $container)
         )->shouldBeCalled();
+
+        $container->setShared(
+            'collaborator_factory',
+            $this->service('PhpSpec\Symfony2Extension\Runner\Collaborator\InitializerFactory', $container)
+        )->shouldBeCalled();
+
+        $container->getByPrefix('collaborator.initializers')->willReturn(array());
+        $container->getParam('symfony2_extension.common-collaborators', array())->willReturn(array());
+        $container->get('collaborator_factory')->willReturn($factory);
+        $container->get('collaborator_factory.default')->willReturn($defaultFactory);
+        $container->get('unwrapper')->willReturn($unwrapper);
 
         $this->load($container);
     }

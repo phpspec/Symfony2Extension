@@ -11,17 +11,21 @@ use PhpSpec\ServiceContainer;
 use PhpSpec\Symfony2Extension\CodeGenerator\ControllerClassGenerator;
 use PhpSpec\Symfony2Extension\CodeGenerator\ControllerSpecificationGenerator;
 use PhpSpec\Symfony2Extension\Locator\PSR0Locator;
-use PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInitializerMaintainer;
-use PhpSpec\Symfony2Extension\Runner\Maintainer\ContainerInjectorMaintainer;
-use PhpSpec\Symfony2Extension\Specification\Container;
+use PhpSpec\Symfony2Extension\Runner\Maintainer\CommonCollaboratorsMaintainer;
+use PhpSpec\Symfony2Extension\Runner\Collaborator\DefaultFactory;
+use PhpSpec\Symfony2Extension\Runner\Collaborator\InitializerFactory;
+use PhpSpec\Symfony2Extension\Runner\Collaborator\Initializer;
 
 class Extension implements ExtensionInterface
 {
     /**
      * @param ServiceContainer $container
      */
-    public function load(ServiceContainer $container)
+    public function load(ServiceContainer $container) //, array $params = array())
     {
+        //foreach ($params as $key => $value) {
+        //    $container->setParam('symfony2_extension.'.$key, $value);
+        //}
         $this->registerConfigurators($container);
         $this->registerRunnerMaintainers($container);
         $this->registerCodeGenerators($container);
@@ -33,18 +37,55 @@ class Extension implements ExtensionInterface
     private function registerRunnerMaintainers(ServiceContainer $container)
     {
         $container->setShared(
-            'runner.maintainers.container_initializer',
+            'runner.maintainers.common_collaborators',
             function ($c) {
-                return new ContainerInitializerMaintainer();
+                return new CommonCollaboratorsMaintainer(
+                    $c->get('unwrapper'),
+                    $c->get('collaborator_factory'),
+                    $c->getParam('symfony2_extension.common-collaborators', array())
+                );
             }
         );
 
-        $container->setShared(
-            'runner.maintainers.container_injector',
-            function ($c) {
-                return new ContainerInjectorMaintainer();
-            }
-        );
+        $container->setShared('collaborator_factory.default', function ($c) {
+            return new DefaultFactory(
+                $c->get('unwrapper')
+            );
+        });
+
+        $container->setShared('collaborator_factory', function ($c) {
+            return new InitializerFactory(
+                $c->get('collaborator_factory.default'),
+                $c->getByPrefix('collaborator.initializer'),
+                $c->getParam('symfony2_extension.common-collaborators', array())
+            );
+        });
+
+        $container->setShared('collaborator.initializer.container', function ($c) {
+            return new Initializer\Container(
+                $c->getParam('symfony2_extension.common-collaborators', array())
+            );
+        }); // first!
+
+        $container->setShared('collaborator.initializer.request', function ($c) {
+            return new Initializer\Request;
+        });
+
+        $container->setShared('collaborator.initializer.session', function ($c) {
+            return new Initializer\Session;
+        });
+
+        $container->setShared('collaborator.initializer.router', function ($c) {
+            return new Initializer\Router;
+        });
+
+        $container->setShared('collaborator.initializer.templating', function ($c) {
+            return new Initializer\Router;
+        });
+
+        $container->setShared('collaborator.initializer.doctrine', function ($c) {
+            return new Initializer\Doctrine;
+        });
     }
 
     /**

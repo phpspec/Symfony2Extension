@@ -1,0 +1,13 @@
+extensions:
+    - PhpSpec\Symfony2Extension\Extension
+
+symfony2_extension.common-collaborators:
+    # append: false # should we support append ? (ie: provide defaults)
+    container: ~
+    router: ~
+    request: ~
+    session: ~
+    doctrine: ~
+    em: ~
+    repository: ~
+    #formFactory: { form.factory: FormFactoryInterface }

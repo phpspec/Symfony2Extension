@@ -40,10 +40,10 @@ __halt_compiler();<?php
 
 namespace %namespace%;
 
-use PhpSpec\Symfony2Extension\Specification\ControllerBehavior;
+use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class %name% extends ControllerBehavior
+class %name% extends ObjectBehavior
 {
     function it_is_container_aware()
     {
