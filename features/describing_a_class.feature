@@ -32,7 +32,6 @@ Feature: Describing a class
     When I run phpspec
     Then I should see "class Scenario2\Bundle\DemoBundle\Model\User does not exist"
 
-  @disabled
   Scenario: Generating a class
     Given I described the "Scenario3/Bundle/DemoBundle/Model/User"
     When I run phpspec and answer "y" to the first question
