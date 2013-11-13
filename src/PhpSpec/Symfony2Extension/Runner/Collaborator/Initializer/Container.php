@@ -22,8 +22,6 @@ class Container implements InitializerInterface
         if (null === $className) {
             $container->beADoubleOf('Symfony\Component\DependencyInjection\ContainerInterface');
         }
-        $container->has('service_container')->willReturn(true);
-        $container->get('service_container')->willReturn($container);
     }
 
     public function postInitialize(CollaboratorManager $collaborators)
