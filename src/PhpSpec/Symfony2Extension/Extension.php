@@ -80,7 +80,7 @@ class Extension implements ExtensionInterface
         });
 
         $container->setShared('collaborator.initializer.templating', function ($c) {
-            return new Initializer\Router;
+            return new Initializer\Templating;
         });
 
         $container->setShared('collaborator.initializer.doctrine', function ($c) {

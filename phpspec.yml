@@ -5,6 +5,7 @@ symfony2_extension.common-collaborators:
     # append: false # should we support append ? (ie: provide defaults)
     container: { service_container: ~ }
     router: ~
+    templating: ~
     request: ~
     session: ~
     doctrine: ~

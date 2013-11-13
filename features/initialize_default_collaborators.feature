@@ -12,6 +12,7 @@ Feature: Initialize default collaborators
         symfony2_extension.common-collaborators:
             container: { service_container: ~ }
             router: ~
+            templating: ~
             request: ~
             session: ~
             doctrine: ~
