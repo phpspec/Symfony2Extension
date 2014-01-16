@@ -123,7 +123,10 @@ class PSR0Locator implements ResourceLocatorInterface
     private function createResourceFromSpecFile($path)
     {
         $relativePath = substr($path, strlen($this->srcPath), -4);
-        $relativePath = str_replace('Spec', '', $relativePath);
+        $relativePath = str_replace('/Spec/', '//', $relativePath);
+        if (strrpos($relativePath, 'Spec') == strlen($relativePath) - 4) {
+            $relativePath = substr($relativePath, 0, -4);
+        }
 
         return $this->createResource($relativePath);
     }
@@ -208,7 +211,10 @@ class PSR0Locator implements ResourceLocatorInterface
     public function createResource($classname)
     {
         $classname = str_replace('/', '\\', $classname);
-        $classname = str_replace(array($this->specSubNamespace, 'Spec'), '', $classname);
+        $classname = str_replace(array('\\Spec\\', '\\'.$this->specSubNamespace.'\\'), '\\\\', $classname);
+        if (strrpos($classname, 'Spec') == strlen($classname) - 4) {
+            $classname = substr($classname, 0, -4);
+        }
         $classname = str_replace('\\\\', '\\', $classname);
 
         if ('' === $this->srcNamespace || 0 === strpos($classname, $this->srcNamespace)) {
