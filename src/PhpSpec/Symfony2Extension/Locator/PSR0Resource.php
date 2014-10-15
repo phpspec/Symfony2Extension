@@ -120,15 +120,20 @@ class PSR0Resource implements ResourceInterface
         }
 
         $parts = array();
+        $found = false;
+        foreach (($this->parts) as $part) {
 
-        foreach ($this->parts as $i => $part) {
-            $parts[] = $part;
-
-            if ((1 === $i && 'Bundle' !== $part) || preg_match('/^.+Bundle$/', $part)) {
-                $parts[] = $this->specSubNamespace;
+            array_push($parts,$part);
+            if (preg_match('/^.+Bundle$/', $part) && !$found) {
+                array_push($parts, $this->specSubNamespace);
+                $found = true;
             }
-        }
 
+        }
+        if (!$found)
+        {
+          array_splice($parts, 2, 0, $this->specSubNamespace);
+        }
         return $parts;
     }
 }

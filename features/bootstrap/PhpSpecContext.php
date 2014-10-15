@@ -1,13 +1,13 @@
 <?php
 
-use Behat\Behat\Context\Context;
+use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use PhpSpec\Console\Application;
 use Console\ApplicationTester;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\StreamOutput;
 
-class PhpSpecContext implements Context
+class PhpSpecContext implements SnippetAcceptingContext
 {
     private $workDir = null;
 
@@ -102,6 +102,17 @@ YML;
         expect(file_get_contents($file))->toBe($string->getRaw());
     }
 
+    /**
+     * @Then a new class file :arg1 should be created
+     * @Then a new specification file :arg1 should be created
+     */
+    public function aNewSpecificationFileShouldBeCreated($file)
+    {
+        if (!file_exists($file)) {
+            throw new \LogicException(sprintf('"%s" file was not created', $file));
+        }
+    }
+    
     /**
      * @Then /^(?:|I )should see "(?P<message>[^"]*)"$/
      */
