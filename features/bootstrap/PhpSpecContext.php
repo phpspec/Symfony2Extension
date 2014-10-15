@@ -1,12 +1,13 @@
 <?php
 
-use Behat\Behat\Context\BehatContext;
+use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use PhpSpec\Console\Application;
+use Console\ApplicationTester;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\StreamOutput;
 
-class PhpSpecContext extends BehatContext
+class PhpSpecContext implements Context
 {
     private $workDir = null;
 
