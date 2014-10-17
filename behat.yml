@@ -4,6 +4,6 @@ default:
       contexts: [ PhpSpecContext ]
   gherkin:
     filters:
-      tags: ~@wip
+      tags: "~@wip&&~@disabled"
   formatters:
     progress : ~
