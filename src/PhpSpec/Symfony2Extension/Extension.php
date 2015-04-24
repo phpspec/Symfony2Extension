@@ -65,7 +65,7 @@ class Extension implements ExtensionInterface
             $namespace = isset($suite['namespace']) ? $suite['namespace'] : '';
             $specSubNamespace = isset($suite['spec_sub_namespace']) ? $suite['spec_sub_namespace'] : 'Spec';
             $srcPath = isset($suite['src_path']) ? $suite['src_path'] : 'src';
-            $specPaths = isset($suite['spec_paths']) ? $suite['spec_paths'] : array('src/*/Bundle/*Bundle/Spec', 'src/*/*/Spec');
+            $specPaths = isset($suite['spec_paths']) ? $suite['spec_paths'] : array('src/*/Bundle/*Bundle/Spec', 'src/*/*/Spec', 'src/*/Spec');
 
             $c->setShared('locator.locators.symfony2_locator',
                 function($c) use ($namespace, $specSubNamespace, $srcPath, $specPaths) {

@@ -27,6 +27,17 @@ Feature: Describing a class
 
     """
 
+  Scenario Outline: Describing a class supports common Symfony2 bundle structures
+    When I describe the "<Class>"
+    Then a new specification file "<Specification>" should be created
+    
+    Examples:
+      | Class                                   | Specification                                           |
+      | Scenario1/Bundle/DemoBundle/Model/User  | src/Scenario1/Bundle/DemoBundle/Spec/Model/UserSpec.php |
+      | Acme/DemoBundle/Model/User              | src/Acme/DemoBundle/Spec/Model/UserSpec.php             |
+      | DemoBundle/Model/User                   | src/DemoBundle/Spec/Model/UserSpec.php                  |
+      
+
   Scenario: Running a spec
     Given I described the "Scenario2/Bundle/DemoBundle/Model/User"
     When I run phpspec
@@ -46,6 +57,18 @@ Feature: Describing a class
     }
 
     """
+
+  Scenario Outline: Generating a class supports common Symfony2 bundle structures
+    Given I described the "<Class>"
+    When I run phpspec and answer "y" to the first question
+    Then a new class file "<Implementation>" should be created
+    
+    Examples:
+      | Class                                   | Implementation                                 |
+      | Scenario1/Bundle/DemoBundle/Model/User  | src/Scenario1/Bundle/DemoBundle/Model/User.php |
+      | Acme/DemoBundle/Model/User              | src/Acme/DemoBundle/Model/User.php             |
+      | DemoBundle/Model/User                   | src/DemoBundle/Model/User.php                  |
+      
 
   Scenario: Executing a class spec
     Given I wrote a spec in the "src/Scenario4/Bundle/DemoBundle/Spec/Model/User.php":
