@@ -1,5 +1,9 @@
 default:
-    formatter:
-        name: progress
+  suites:
+    phpspec:
+      contexts: [ PhpSpecContext ]
+  gherkin:
     filters:
-        tags: "~@wip&&~@disabled"
+      tags: "~@wip&&~@disabled"
+  formatters:
+    progress : ~
